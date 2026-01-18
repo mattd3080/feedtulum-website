@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/donate",
+      "destination": "https://pages.donately.com/tulumfoodsupport/campaigns",
+      "permanent": true
+    }
+  ]
+}
