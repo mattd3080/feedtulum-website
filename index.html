@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed Tulum</title>
+    <meta name="description" content="Feed Tulum provides food, clothing, and medical support to underserved communities in Tulum, Mexico.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --terracotta: #C65D3B;
+            --terracotta-dark: #A84E32;
+            --sand: #F4F1DE;
+            --jungle: #2C3E50;
+            --cream: #FDFCF7;
+            --text-dark: #1a1a1a;
+            --text-medium: #4a4a4a;
+            --text-light: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            background-color: var(--cream);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-weight: 600;
+            line-height: 1.25;
+            color: var(--jungle);
+        }
+
+        a {
+            color: var(--terracotta);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--terracotta-dark);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 clamp(20px, 5vw, 48px);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(253, 252, 247, 0.97);
+            z-index: 100;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--jungle);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: clamp(1.5rem, 3vw, 2.5rem);
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--terracotta);
+        }
+
+        .nav-cta {
+            background: var(--terracotta);
+            color: white !important;
+            padding: 0.6rem 1.25rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .nav-cta:hover {
+            background: var(--terracotta-dark);
+            color: white !important;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--jungle);
+            margin: 5px 0;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.875rem 1.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--terracotta);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--terracotta-dark);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--jungle);
+            border: 1px solid var(--jungle);
+        }
+
+        .btn-secondary:hover {
+            background: var(--jungle);
+            color: white;
+        }
+
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1.05rem;
+        }
+
+        /* Hero */
+        .hero {
+            padding-top: 5rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--sand);
+        }
+
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(2rem, 5vw, 4rem);
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            margin-bottom: 1.25rem;
+        }
+
+        .hero-content h1 span {
+            color: var(--terracotta);
+        }
+
+        .hero-tagline {
+            font-size: clamp(1rem, 2vw, 1.15rem);
+            color: var(--text-medium);
+            margin-bottom: 2rem;
+            max-width: 480px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .hero-image {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+
+        /* Mobile hero banner */
+        .hero-mobile-banner {
+            display: none;
+        }
+
+        /* Sections */
+        section {
+            padding: clamp(3rem, 8vw, 5rem) 0;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            margin-bottom: 1.25rem;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-medium);
+            max-width: 560px;
+            margin-bottom: 2rem;
+        }
+
+        /* About */
+        .about {
+            background: var(--cream);
+        }
+
+        .about-content p {
+            margin-bottom: 1rem;
+            color: var(--text-medium);
+        }
+
+        .about-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Programs */
+        .programs {
+            background: var(--sand);
+        }
+
+        .programs-intro {
+            max-width: 720px;
+            margin-bottom: 2rem;
+            color: var(--text-medium);
+        }
+
+        .program-featured {
+            background: white;
+            padding: clamp(2rem, 5vw, 3rem);
+            border-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            margin-bottom: 1.5rem;
+        }
+
+        .program-featured h3 {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .program-featured p {
+            color: var(--text-medium);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .program-featured p:last-child {
+            margin-bottom: 0;
+        }
+
+        .programs-secondary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .program-card {
+            background: white;
+            padding: clamp(1.5rem, 4vw, 2rem);
+            border-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .program-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .program-card p {
+            color: var(--text-medium);
+            font-size: 0.95rem;
+        }
+
+        /* Help */
+        .help {
+            background: var(--cream);
+        }
+
+        .help-featured {
+            background: var(--sand);
+            padding: clamp(2rem, 5vw, 2.5rem);
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .help-featured h3 {
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .help-featured p {
+            color: var(--text-medium);
+            font-size: 1rem;
+            max-width: 600px;
+        }
+
+        .help-featured .btn-primary {
+            white-space: nowrap;
+        }
+
+        .help-secondary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .help-card {
+            background: white;
+            padding: clamp(1.5rem, 4vw, 2rem);
+            border-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .help-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .help-card p {
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        .help-card .btn {
+            align-self: flex-start;
+        }
+
+        /* Gallery Slider */
+        .gallery {
+            background: var(--sand);
+            overflow: hidden;
+        }
+
+        .gallery .container {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .gallery-header {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 clamp(20px, 5vw, 48px);
+            margin-bottom: 2rem;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            padding: 0 clamp(20px, 5vw, 48px);
+        }
+
+        .slider {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 1rem;
+        }
+
+        .slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slider-item {
+            flex: 0 0 auto;
+            width: 320px;
+            aspect-ratio: 4/3;
+            scroll-snap-align: start;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .slider-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 0 clamp(20px, 5vw, 48px);
+        }
+
+        .slider-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--jungle);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .slider-btn:hover {
+            background: var(--jungle);
+            color: white;
+        }
+
+        .slider-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Contact */
+        .contact {
+            background: var(--cream);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .contact-card {
+            background: white;
+            padding: clamp(1.5rem, 4vw, 2rem);
+            border-radius: 6px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .contact-link {
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--terracotta);
+            border-radius: 4px;
+            transition: all 0.2s;
+            align-self: flex-start;
+        }
+
+        .contact-link:hover {
+            background: var(--terracotta);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--jungle);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand h3 {
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .footer-links h4 {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.5rem;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero-tagline {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                max-width: 560px;
+                margin: 0 auto;
+            }
+
+            .programs-secondary {
+                grid-template-columns: 1fr;
+            }
+
+            .help-featured {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .help-featured p {
+                margin: 0 auto;
+            }
+
+            .help-featured .btn-primary {
+                margin-top: 1.5rem;
+            }
+
+            .help-secondary {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1.5rem;
+                gap: 1rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            section {
+                padding: 2.5rem 0;
+            }
+
+            .hero {
+                padding-top: 0;
+                min-height: auto;
+                padding-bottom: 0;
+                background: var(--sand);
+            }
+
+            .hero .container {
+                padding: 0;
+                gap: 0;
+            }
+
+            .hero-mobile-banner {
+                display: block;
+                width: 100%;
+                height: 50vh;
+                min-height: 280px;
+                max-height: 400px;
+                position: relative;
+                margin-top: 57px;
+            }
+
+            .hero-mobile-banner img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .hero-content {
+                padding: 2rem clamp(20px, 5vw, 48px);
+                text-align: left;
+                background: var(--sand);
+            }
+
+            .hero-tagline {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .hero-buttons {
+                justify-content: flex-start;
+            }
+
+            .about {
+                background: var(--sand);
+                padding-top: 0;
+            }
+
+            .help-card {
+                text-align: center;
+            }
+
+            .help-card .btn {
+                align-self: center;
+            }
+
+            .contact-card {
+                text-align: center;
+            }
+
+            .contact-card .contact-link {
+                align-self: center;
+            }
+
+            .slider-item {
+                width: 280px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+                text-align: center;
+            }
+
+            .footer-brand {
+                order: 3;
+                padding-top: 1.25rem;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .footer-brand h3 {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .footer-links {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-links h4 {
+                margin-bottom: 0.5rem;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: rgba(255,255,255,0.5);
+            }
+
+            .footer-links ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.25rem 1.25rem;
+            }
+
+            .footer-links li {
+                margin-bottom: 0;
+            }
+
+            .footer-links a {
+                font-size: 0.95rem;
+                color: rgba(255,255,255,0.8);
+            }
+
+            .footer-bottom {
+                margin-top: 1rem;
+                padding-top: 1rem;
+            }
+
+            .footer-bottom p {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            html {
+                font-size: 15px;
+            }
+
+            section {
+                padding: 2rem 0;
+            }
+
+            .hero-mobile-banner {
+                height: 45vh;
+                min-height: 240px;
+            }
+
+            .hero-content {
+                padding: 1.5rem 20px 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 1.85rem;
+            }
+
+            .hero-tagline {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.75rem;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .slider-item {
+                width: 260px;
+            }
+
+            .help-card p,
+            .program-card p,
+            .program-featured p {
+                font-size: 0.9rem;
+            }
+
+            .help-card,
+            .program-card {
+                padding: 1.25rem;
+            }
+
+            .program-featured {
+                padding: 1.5rem;
+            }
+
+            footer {
+                padding: 2rem 0 1.5rem;
+            }
+
+            .footer-content {
+                gap: 1.5rem;
+            }
+
+            .footer-links h4 {
+                margin-bottom: 0.5rem;
+            }
+
+            .footer-brand p {
+                font-size: 0.8rem;
+            }
+
+            .footer-bottom {
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="#" class="nav-logo">Feed Tulum</a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#programs">Programs</a></li>
+                <li><a href="#help">Get Involved</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="https://pages.donately.com/tulumfoodsupport/campaigns" class="nav-cta" target="_blank" rel="noopener">Donate</a></li>
+            </ul>
+            <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-mobile-banner">
+                <img src="hero.webp" alt="Feed Tulum volunteers and community members">
+            </div>
+            <div class="hero-content">
+                <h1>Let's <span>Feed</span> Tulum</h1>
+                <p class="hero-tagline">We're a community-driven non-profit that creates pathways for people to give back to Tulum's underserved communities.</p>
+                <div class="hero-buttons">
+                    <a href="https://pages.donately.com/tulumfoodsupport/campaigns" class="btn btn-primary" target="_blank" rel="noopener">Make a Donation</a>
+                    <a href="#help" class="btn btn-secondary">Get Involved</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <img src="hero.webp" alt="Feed Tulum volunteers and community members" class="hero-image">
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">Nourishing Our Community</h2>
+            <div class="about-content">
+                <p>There are many people who live in very difficult conditions in Tulum, without consistent access to medicine, nutritious food, and other modern amenities. This is all in spite of the fact that they are good, hard working people.</p>
+
+                <p>We've provided tens of thousands of free meals via a food bank that we operate, as well as countless clothing items and medical support to in-need families and orphans that live in Tulum.</p>
+
+                <p>The tourist and expat communities of Tulum are full of caring people who would love to help, but haven't known where to start. Feed Tulum is changing that. We believe that if we work together, we can change the lives of many people who live here, in massively positive ways.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="programs" class="programs">
+        <div class="container">
+            <h2 class="section-title">Active Programs</h2>
+            <p class="programs-intro">Feed Tulum facilitates a number of one-off charitable events in our community, in addition to the following active programs:</p>
+
+            <div class="program-featured">
+                <h3>Local Orphanage Support</h3>
+                <p>We have partnered with a local orphanage, providing them with food and activities that inject positivity into the lives of kids there such as English lessons, yoga classes, field trips, and post-graduation job placement assistance.</p>
+                <p>Additionally, we have recently broken ground on an on-site permaculture farm, which will provide the kids with a consistent source of healthy, organic food.</p>
+            </div>
+
+            <div class="programs-secondary">
+                <div class="program-card">
+                    <h3>Food Bank</h3>
+                    <p>We operate a bi-weekly service, in collaboration with a local church, Iglesia Camino Al Cielo, which provides free food kits to local families in need.</p>
+                </div>
+
+                <div class="program-card">
+                    <h3>Tacos and Toys</h3>
+                    <p>Tacos and Toys is our big annual holiday event that provides local kids with toys and families with fun memories and food.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="help" class="help">
+        <div class="container">
+            <h2 class="section-title">How You Can Help</h2>
+
+            <div class="help-featured">
+                <div>
+                    <h3>Make a Donation</h3>
+                    <p>Our biggest constraint is financial and the most impactful way for you to help us is by donating or helping us raise funds. We don't have salaried staff and 100% of funds we receive go back into the community. We are a 501(c)(3) non-profit and donations are tax deductible for Americans.</p>
+                </div>
+                <a href="https://pages.donately.com/tulumfoodsupport/campaigns" class="btn btn-primary btn-large" target="_blank" rel="noopener">Donate Now</a>
+            </div>
+
+            <div class="help-secondary">
+                <div class="help-card">
+                    <h3>Volunteer Your Time</h3>
+                    <p>We consistently host opportunities for volunteers and we'd love for you to join us!</p>
+                    <a href="https://chat.whatsapp.com/IQu06r2r7Y76i0SoQxiMV7?mode=hqrt2" class="btn btn-secondary" target="_blank" rel="noopener">Join WhatsApp Group</a>
+                </div>
+
+                <div class="help-card">
+                    <h3>Start an Initiative</h3>
+                    <p>Many community members have proposed initiatives that fundraise or give back in various ways. If you have an idea you'd like to get off the ground, let's do it.</p>
+                    <a href="mailto:feedtulum@gmail.com" class="btn btn-secondary">Get in Touch</a>
+                </div>
+
+                <div class="help-card">
+                    <h3>Donate Items</h3>
+                    <p>We accept donations of clothes and household items, all of which are redistributed to local families in need. Every item makes a difference.</p>
+                    <a href="https://wa.me/529842364165" class="btn btn-secondary" target="_blank" rel="noopener">Contact Gabriela to Donate</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <div class="gallery-header">
+                <h2 class="section-title">Photos from Our Events</h2>
+            </div>
+
+            <div class="slider-wrapper">
+                <div class="slider" id="gallery-slider">
+                    <div class="slider-item">
+                        <img src="gallery-01.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-02.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-03.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-04.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-05.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-06.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-07.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-08.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-09.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-10.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-11.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-12.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-13.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-14.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                    <div class="slider-item">
+                        <img src="gallery-15.png" alt="Feed Tulum community event" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-controls">
+                <button class="slider-btn" onclick="slideGallery(-1)" aria-label="Previous">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <button class="slider-btn" onclick="slideGallery(1)" aria-label="Next">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+            <script>
+                function slideGallery(direction) {
+                    const slider = document.getElementById('gallery-slider');
+                    const itemWidth = 336; // 320px width + 16px gap
+
+                    if (direction === 1) {
+                        // Going right/next
+                        if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
+                            slider.scrollTo({left: 0, behavior: 'smooth'});
+                        } else {
+                            slider.scrollBy({left: itemWidth, behavior: 'smooth'});
+                        }
+                    } else {
+                        // Going left/previous
+                        if (slider.scrollLeft <= 10) {
+                            slider.scrollTo({left: slider.scrollWidth, behavior: 'smooth'});
+                        } else {
+                            slider.scrollBy({left: -itemWidth, behavior: 'smooth'});
+                        }
+                    }
+                }
+            </script>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get in Touch</h2>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <h3>WhatsApp Community</h3>
+                    <p>Join our WhatsApp group to stay updated on events and connect with other volunteers.</p>
+                    <a href="https://chat.whatsapp.com/IQu06r2r7Y76i0SoQxiMV7?mode=hqrt2" class="contact-link" target="_blank" rel="noopener">Join the Group</a>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Email</h3>
+                    <p>Have questions or want to discuss partnership opportunities?</p>
+                    <a href="mailto:feedtulum@gmail.com" class="contact-link">feedtulum@gmail.com</a>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Instagram</h3>
+                    <p>See our latest events, stories, and community updates.</p>
+                    <a href="http://instagram.com/feedtulum" class="contact-link" target="_blank" rel="noopener">@feedtulum</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Feed Tulum</h3>
+                    <p>Feed Tulum is a community initiative of Tulum Food Support, a U.S.-registered 501(c)(3) nonprofit. EIN: 86-2375227.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Links</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#programs">Programs</a></li>
+                        <li><a href="#help">Get Involved</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="https://chat.whatsapp.com/IQu06r2r7Y76i0SoQxiMV7?mode=hqrt2" target="_blank" rel="noopener">WhatsApp</a></li>
+                        <li><a href="http://instagram.com/feedtulum" target="_blank" rel="noopener">Instagram</a></li>
+                        <li><a href="mailto:feedtulum@gmail.com">Email</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>Feed Tulum</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
