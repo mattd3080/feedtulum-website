@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/donate",
-      "destination": "https://pages.donately.com/feedtulum/campaign/feed-tulum",
+      "destination": "https://pages.donately.com/feedtulum/campaign/feed-tulum/",
       "permanent": true
     }
   ]
