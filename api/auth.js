@@ -12,13 +12,8 @@ export default function handler(req, res) {
     return res.status(400).json({ success: false, error: 'Password required' });
   }
 
-  // Get the correct password from environment variable
-  const correctPassword = process.env.GRANTS_PASSWORD;
-
-  // Check if environment variable is set
-  if (!correctPassword) {
-    return res.status(500).json({ success: false, error: 'Server configuration error' });
-  }
+  // Simple hardcoded password for now
+  const correctPassword = 'feedtulum2026';
 
   // Compare passwords
   if (password === correctPassword) {
