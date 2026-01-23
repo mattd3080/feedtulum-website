@@ -174,8 +174,223 @@
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
+        .grants-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .grant-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--cream);
+        }
+
+        .grant-card:hover {
+            border-color: var(--terracotta);
+            box-shadow: 0 2px 8px rgba(198, 93, 59, 0.1);
+        }
+
+        .grant-card.expanded {
+            background: white;
+            border-color: var(--terracotta);
+        }
+
+        .grant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .grant-title {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .grant-title h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.25rem;
+            color: var(--jungle);
+        }
+
+        .grant-funder {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+        }
+
+        .grant-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .grant-amount {
+            font-weight: 600;
+            color: var(--terracotta);
+        }
+
+        .grant-deadline {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+        }
+
+        .priority-stars {
+            color: var(--terracotta);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-ready {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-submitted {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .grant-details {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .grant-card.expanded .grant-details {
+            display: block;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--jungle);
+        }
+
+        .detail-section p, .detail-section ul {
+            color: var(--text-medium);
+            font-size: 0.95rem;
+        }
+
+        .instructions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .instructions-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--terracotta);
+        }
+
+        .material-item {
+            background: var(--sand);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .material-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .material-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .btn-copy {
+            padding: 0.25rem 0.75rem;
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--terracotta-dark);
+        }
+
+        .material-content {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-submit {
+            padding: 0.5rem 1rem;
+            background: var(--jungle);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--text-dark);
+        }
+
         .hidden {
             display: none;
+        }
+
+        @media (max-width: 768px) {
+            .grant-header {
+                flex-direction: column;
+            }
+
+            .grant-meta {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn-logout {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -207,18 +422,65 @@
 
         <div class="container">
             <div class="dashboard-content">
-                <h2>Dashboard</h2>
-                <p style="color: var(--text-medium); margin-top: 1rem;">Grant cards will appear here...</p>
+                <h2 style="margin-bottom: 1.5rem;">Available Grants</h2>
+                <div id="grantsList" class="grants-list"></div>
             </div>
         </div>
     </div>
 
     <script>
+        // Test grant data
+        const testGrants = [
+            {
+                id: "test-grant-1",
+                name: "Test Grant One",
+                funder: "Test Foundation",
+                amount: "$5,000 - $10,000",
+                deadline: "Rolling",
+                deadlineDate: null,
+                priority: 4,
+                status: "ready",
+                description: "This is a test grant description to verify the card layout and expansion functionality.",
+                whyWeQualify: "We qualify because this is a test grant designed to validate the interface works correctly.",
+                instructions: [
+                    "Step 1: Do this first thing",
+                    "Step 2: Then do this second thing",
+                    "Step 3: Finally do this last thing"
+                ],
+                materials: {
+                    emailSubject: "Test Grant Application - Feed Tulum",
+                    emailBody: "Dear Test Foundation,\n\nThis is a test email body for the grant application. It contains multiple lines to verify the copy functionality works correctly.\n\nBest regards,\nFeed Tulum"
+                }
+            },
+            {
+                id: "test-grant-2",
+                name: "Test Grant Two",
+                funder: "Another Foundation",
+                amount: "$1,000 - $5,000",
+                deadline: "March 15, 2026",
+                deadlineDate: "2026-03-15",
+                priority: 5,
+                status: "ready",
+                description: "Another test grant with a specific deadline to test the countdown feature.",
+                whyWeQualify: "Perfect fit for testing deadline calculations and priority sorting.",
+                instructions: [
+                    "Step A: First step",
+                    "Step B: Middle step",
+                    "Step C: Final step"
+                ],
+                materials: {
+                    emailSubject: "Grant Inquiry: Feed Tulum Community Programs",
+                    emailBody: "Hello,\n\nWe are writing to apply for your grant program.\n\nThank you for your consideration."
+                }
+            }
+        ];
+
         // Check if already authenticated
         function checkAuth() {
             const isAuthenticated = sessionStorage.getItem('authenticated') === 'true';
             if (isAuthenticated) {
                 showDashboard();
+                renderGrants();
             } else {
                 showLogin();
             }
@@ -289,6 +551,130 @@
             document.getElementById('password').value = '';
             showLogin();
         });
+
+        // Calculate days until deadline
+        function getDaysUntil(dateString) {
+            if (!dateString) return null;
+            const deadline = new Date(dateString);
+            const today = new Date();
+            const diffTime = deadline - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        // Generate priority stars
+        function getPriorityStars(priority) {
+            return '★'.repeat(priority) + '☆'.repeat(5 - priority);
+        }
+
+        // Render all grants
+        function renderGrants() {
+            const container = document.getElementById('grantsList');
+
+            // Sort by priority (highest first)
+            const sortedGrants = [...testGrants].sort((a, b) => b.priority - a.priority);
+
+            container.innerHTML = sortedGrants.map(grant => {
+                const daysUntil = getDaysUntil(grant.deadlineDate);
+                const deadlineText = daysUntil !== null
+                    ? `${grant.deadline} (${daysUntil} days left)`
+                    : grant.deadline;
+
+                return `
+                    <div class="grant-card" data-grant-id="${grant.id}">
+                        <div class="grant-header">
+                            <div class="grant-title">
+                                <h3>${grant.name}</h3>
+                                <div class="grant-funder">${grant.funder}</div>
+                            </div>
+                            <div class="grant-meta">
+                                <span class="grant-amount">${grant.amount}</span>
+                                <span class="grant-deadline">${deadlineText}</span>
+                                <span class="priority-stars" title="${grant.priority} out of 5">${getPriorityStars(grant.priority)}</span>
+                                <span class="status-badge status-${grant.status}">${grant.status === 'ready' ? 'Ready' : 'Submitted'}</span>
+                            </div>
+                        </div>
+
+                        <div class="grant-details">
+                            <div class="detail-section">
+                                <h4>Description</h4>
+                                <p>${grant.description}</p>
+                            </div>
+
+                            <div class="detail-section">
+                                <h4>Why We Qualify</h4>
+                                <p>${grant.whyWeQualify}</p>
+                            </div>
+
+                            <div class="detail-section">
+                                <h4>Application Materials</h4>
+                                ${grant.materials.emailSubject ? `
+                                    <div class="material-item">
+                                        <div class="material-header">
+                                            <span class="material-label">Email Subject:</span>
+                                            <button class="btn-copy" onclick="copyToClipboard('subject-${grant.id}', this)">Copy</button>
+                                        </div>
+                                        <div class="material-content" id="subject-${grant.id}">${grant.materials.emailSubject}</div>
+                                    </div>
+                                ` : ''}
+                                ${grant.materials.emailBody ? `
+                                    <div class="material-item">
+                                        <div class="material-header">
+                                            <span class="material-label">Email Body:</span>
+                                            <button class="btn-copy" onclick="copyToClipboard('body-${grant.id}', this)">Copy</button>
+                                        </div>
+                                        <div class="material-content" id="body-${grant.id}">${grant.materials.emailBody}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="detail-section">
+                                <h4>Submission Instructions</h4>
+                                <ul class="instructions-list">
+                                    ${grant.instructions.map(step => `<li>${step}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button class="btn-submit" onclick="markAsSubmitted('${grant.id}')">Mark as Submitted</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click handlers to toggle expansion
+            document.querySelectorAll('.grant-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Don't toggle if clicking on a button
+                    if (e.target.tagName === 'BUTTON') return;
+                    card.classList.toggle('expanded');
+                });
+            });
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(elementId, button) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Mark grant as submitted
+        function markAsSubmitted(grantId) {
+            const grant = testGrants.find(g => g.id === grantId);
+            if (grant) {
+                grant.status = 'submitted';
+                renderGrants();
+            }
+        }
 
         // Check authentication on page load
         checkAuth();
