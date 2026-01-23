@@ -429,8 +429,19 @@
     </div>
 
     <script>
+        // Load saved statuses from localStorage
+        function loadGrantStatuses() {
+            const saved = localStorage.getItem('grantStatuses');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        // Save grant statuses to localStorage
+        function saveGrantStatuses(statuses) {
+            localStorage.setItem('grantStatuses', JSON.stringify(statuses));
+        }
+
         // Test grant data
-        const testGrants = [
+        let testGrants = [
             {
                 id: "test-grant-1",
                 name: "Test Grant One",
@@ -571,8 +582,21 @@
         function renderGrants() {
             const container = document.getElementById('grantsList');
 
-            // Sort by priority (highest first)
-            const sortedGrants = [...testGrants].sort((a, b) => b.priority - a.priority);
+            // Load saved statuses
+            const statuses = loadGrantStatuses();
+            testGrants.forEach(grant => {
+                if (statuses[grant.id]) {
+                    grant.status = statuses[grant.id];
+                }
+            });
+
+            // Sort by status (ready first) then by priority (highest first)
+            const sortedGrants = [...testGrants].sort((a, b) => {
+                if (a.status === b.status) {
+                    return b.priority - a.priority;
+                }
+                return a.status === 'ready' ? -1 : 1;
+            });
 
             container.innerHTML = sortedGrants.map(grant => {
                 const daysUntil = getDaysUntil(grant.deadlineDate);
@@ -636,7 +660,10 @@
                             </div>
 
                             <div class="action-buttons">
-                                <button class="btn-submit" onclick="markAsSubmitted('${grant.id}')">Mark as Submitted</button>
+                                ${grant.status === 'ready'
+                                    ? `<button class="btn-submit" onclick="markAsSubmitted('${grant.id}')">Mark as Submitted</button>`
+                                    : `<button class="btn-submit" onclick="markAsNotSubmitted('${grant.id}')">Mark as Not Submitted</button>`
+                                }
                             </div>
                         </div>
                     </div>
@@ -672,6 +699,27 @@
             const grant = testGrants.find(g => g.id === grantId);
             if (grant) {
                 grant.status = 'submitted';
+
+                // Save to localStorage
+                const statuses = loadGrantStatuses();
+                statuses[grantId] = 'submitted';
+                saveGrantStatuses(statuses);
+
+                renderGrants();
+            }
+        }
+
+        // Mark grant as not submitted
+        function markAsNotSubmitted(grantId) {
+            const grant = testGrants.find(g => g.id === grantId);
+            if (grant) {
+                grant.status = 'ready';
+
+                // Save to localStorage
+                const statuses = loadGrantStatuses();
+                statuses[grantId] = 'ready';
+                saveGrantStatuses(statuses);
+
                 renderGrants();
             }
         }
