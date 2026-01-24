@@ -575,6 +575,7 @@
                     // Store authentication in sessionStorage
                     sessionStorage.setItem('authenticated', 'true');
                     showDashboard();
+                    renderGrants();
                 } else {
                     showError(data.error || 'Invalid password');
                 }
