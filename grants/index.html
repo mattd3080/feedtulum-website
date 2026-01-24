@@ -440,48 +440,78 @@
             localStorage.setItem('grantStatuses', JSON.stringify(statuses));
         }
 
-        // Test grant data
+        // Real grant data
         let testGrants = [
             {
-                id: "test-grant-1",
-                name: "Test Grant One",
-                funder: "Test Foundation",
-                amount: "$5,000 - $10,000",
+                id: "world-forgotten-children",
+                name: "World Forgotten Children Foundation Grant",
+                funder: "World Forgotten Children Foundation",
+                amount: "Varies",
+                deadline: "Rolling",
+                deadlineDate: null,
+                priority: 5,
+                status: "ready",
+                description: "Supports projects providing care and medical devices to improve lives of orphaned children and young adults with disabilities in developing countries. Focuses on children from newborn to 17 years living in orphanages, group homes, and similar facilities.",
+                whyWeQualify: "Feed Tulum supports a local orphanage with under 20 children (expanding to 60), providing food, enrichment activities like English lessons and yoga, and building an onsite permaculture farm. Our programs directly align with improving quality of life for orphaned children.",
+                instructions: [
+                    "Download and complete the Project Proposal Form from their website",
+                    "Email completed form to: help@world-forgotten-children.org",
+                    "Attach: 501(c)(3) determination letter",
+                    "Attach: Most recent Form 990",
+                    "Include detailed budget for proposed project",
+                    "Return here and mark as submitted"
+                ],
+                materials: {
+                    emailSubject: "Project Proposal: Feed Tulum Orphanage Support Program",
+                    emailBody: "Dear World Forgotten Children Foundation,\n\nWe are writing to submit a project proposal for your consideration. Feed Tulum (EIN: 86-2375227) is a U.S. 501(c)(3) nonprofit supporting orphaned children in Tulum, Mexico.\n\nWe currently partner with a local orphanage providing food security and enrichment programs for under 20 children, with plans to expand support to 60 children. Our programs include:\n\n- Regular food support ensuring consistent nutrition\n- English language lessons\n- Yoga and wellness activities  \n- On-site permaculture farm (recently launched) providing organic food\n- Post-graduation job placement assistance\n\nWe are seeking funding to expand our orphanage support programs, particularly our permaculture farm initiative which will provide sustainable, healthy food for the children.\n\nAttached you will find our 501(c)(3) determination letter, most recent Form 990, and detailed project budget.\n\nThank you for considering our proposal.\n\nBest regards,\nFeed Tulum Team\nfeedtulum@gmail.com"
+                }
+            },
+            {
+                id: "global-fund-children",
+                name: "Global Fund for Children Partnership Grant",
+                funder: "Global Fund for Children",
+                amount: "$25,000 - $75,000",
                 deadline: "Rolling",
                 deadlineDate: null,
                 priority: 4,
                 status: "ready",
-                description: "This is a test grant description to verify the card layout and expansion functionality.",
-                whyWeQualify: "We qualify because this is a test grant designed to validate the interface works correctly.",
+                description: "Partners with grassroots organizations worldwide working to improve lives of children and youth. Focuses on protecting children's rights, advancing youth leadership, and driving community-led change.",
+                whyWeQualify: "As a community-led grassroots organization supporting vulnerable children through our orphanage programs and food bank, we align with their mission. We work directly in the community with local partners like Iglesia Camino Al Cielo.",
                 instructions: [
-                    "Step 1: Do this first thing",
-                    "Step 2: Then do this second thing",
-                    "Step 3: Finally do this last thing"
+                    "Visit globalfundforchildren.org",
+                    "Review partnership requirements and eligibility",
+                    "Complete their online partnership inquiry form",
+                    "Prepare organizational overview and program description",
+                    "Submit financial statements and 501(c)(3) documentation",
+                    "Mark as submitted when application sent"
                 ],
                 materials: {
-                    emailSubject: "Test Grant Application - Feed Tulum",
-                    emailBody: "Dear Test Foundation,\n\nThis is a test email body for the grant application. It contains multiple lines to verify the copy functionality works correctly.\n\nBest regards,\nFeed Tulum"
+                    emailSubject: "Partnership Inquiry: Feed Tulum Community Programs",
+                    emailBody: "Dear Global Fund for Children,\n\nFeed Tulum is a grassroots nonprofit (U.S. 501(c)(3), EIN: 86-2375227) creating pathways for people to give back to underserved neighbors in Tulum, Mexico.\n\nOur programs include:\n\n1. Local Orphanage Support: We partner with an orphanage supporting under 20 children (expanding to 60), providing:\n   - Consistent food and nutrition\n   - Educational enrichment (English lessons)\n   - Wellness activities (yoga)\n   - On-site permaculture farm for sustainable organic food\n   - Post-graduation job placement assistance\n\n2. Bi-weekly Food Bank: In collaboration with Iglesia Camino Al Cielo, we distribute free food kits to families in need.\n\n3. Tacos and Toys: Annual holiday event providing toys, food, and family experiences for local children.\n\nTo date, we've distributed tens of thousands of meals and countless clothing items and medical support to families and orphans in Tulum. We seek partnership to expand our impact and reach more vulnerable children in our community.\n\nWe would appreciate the opportunity to explore a partnership with Global Fund for Children.\n\nThank you for your consideration.\n\nBest regards,\nFeed Tulum Team\nfeedtulum@gmail.com"
                 }
             },
             {
-                id: "test-grant-2",
-                name: "Test Grant Two",
-                funder: "Another Foundation",
-                amount: "$1,000 - $5,000",
-                deadline: "March 15, 2026",
-                deadlineDate: "2026-03-15",
+                id: "popeyes-food-love",
+                name: "Popeyes Foundation Food Love Grants 2026",
+                funder: "The Popeyes Foundation",
+                amount: "$1,000 - $60,000",
+                deadline: "2026 Cycle (Opening Soon)",
+                deadlineDate: null,
                 priority: 5,
                 status: "ready",
-                description: "Another test grant with a specific deadline to test the countdown feature.",
-                whyWeQualify: "Perfect fit for testing deadline calculations and priority sorting.",
+                description: "Supports 501(c)(3) nonprofits serving food to those who need it. Focuses on food insecure, limited access, underserved, low-income individuals and families. Programs include onsite feeding, mobile kitchens, homebound delivery, out-of-school meals, and disaster food support.",
+                whyWeQualify: "Our bi-weekly food bank directly serves food-insecure families in Tulum. We operate an ongoing feeding program providing free food kits to local families in need, and we support orphans with regular meals and nutrition.",
                 instructions: [
-                    "Step A: First step",
-                    "Step B: Middle step",
-                    "Step C: Final step"
+                    "Visit popeyesfoundation.org/programs/food-love-grants",
+                    "Complete the 2026 Food Love Grants Nonprofit Consideration Form",
+                    "Provide organizational information and program details",
+                    "Submit 501(c)(3) documentation",
+                    "Wait for invitation to submit full application",
+                    "Mark as submitted after consideration form sent"
                 ],
                 materials: {
-                    emailSubject: "Grant Inquiry: Feed Tulum Community Programs",
-                    emailBody: "Hello,\n\nWe are writing to apply for your grant program.\n\nThank you for your consideration."
+                    emailSubject: "2026 Food Love Grant Consideration - Feed Tulum",
+                    emailBody: "Program Overview for Consideration Form:\n\nOrganization: Feed Tulum (Tulum Food Support)\nEIN: 86-2375227\nStatus: 501(c)(3) nonprofit\n\nPrograms Serving Food to Those in Need:\n\n1. Bi-Weekly Food Bank\n- Partnership with Iglesia Camino Al Cielo\n- Free food kits distributed to local families\n- Serves food-insecure, low-income families in Tulum, Mexico\n- Tens of thousands of meals distributed to date\n\n2. Orphanage Feeding Program\n- Regular food support for under 20 orphaned children (expanding to 60)\n- On-site permaculture farm providing fresh organic produce\n- Ensuring consistent nutrition for vulnerable children\n\n3. Community Holiday Meals\n- Annual Tacos and Toys event\n- Provides meals and food to families during holidays\n\nOur programs address food insecurity in an underserved community where many families lack consistent access to nutritious food. We work with hard-working people who live in difficult conditions without regular access to basic amenities.\n\nWe request consideration for the 2026 Food Love Grants program to expand our food distribution capacity and reach more families in need.\n\nContact: feedtulum@gmail.com"
                 }
             }
         ];
