@@ -12,8 +12,8 @@ export default function handler(req, res) {
     return res.status(400).json({ success: false, error: 'Password required' });
   }
 
-  // Simple hardcoded password for now
-  const correctPassword = 'feedtulum2026';
+  // Production password - share only with authorized admin users
+  const correctPassword = 'FeedTulum!Grants2026';
 
   // Compare passwords
   if (password === correctPassword) {
