@@ -373,6 +373,68 @@
             display: none;
         }
 
+        /* Kanban Board Styles */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .kanban-column {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            min-height: 400px;
+        }
+
+        .kanban-column h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--sand);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        #column-consider h3 {
+            color: var(--text-medium);
+            border-bottom-color: var(--text-medium);
+        }
+
+        #column-progress h3 {
+            color: var(--terracotta);
+            border-bottom-color: var(--terracotta);
+        }
+
+        #column-submitted h3 {
+            color: #2e7d32;
+            border-bottom-color: #2e7d32;
+        }
+
+        .kanban-cards {
+            min-height: 300px;
+        }
+
+        .kanban-cards .grant-card {
+            margin-bottom: 0.75rem;
+            cursor: move;
+        }
+
+        .kanban-cards .grant-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+        }
+
+        .sortable-drag {
+            cursor: grabbing !important;
+        }
+
         @media (max-width: 768px) {
             .grant-header {
                 flex-direction: column;
@@ -391,8 +453,17 @@
             .btn-logout {
                 width: 100%;
             }
+
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+
+            .kanban-column {
+                min-height: 200px;
+            }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -420,26 +491,28 @@
             <button class="btn-logout" id="logoutBtn">Logout</button>
         </div>
 
-        <div class="container">
+        <div class="container" style="max-width: 1400px;">
             <div class="dashboard-content">
-                <h2 style="margin-bottom: 1.5rem;">Available Grants</h2>
-                <div id="grantsList" class="grants-list"></div>
+                <h2 style="margin-bottom: 1.5rem;">Grant Pipeline</h2>
+                <div class="kanban-board">
+                    <div class="kanban-column" id="column-consider">
+                        <h3>To Consider</h3>
+                        <div class="kanban-cards" id="cards-consider"></div>
+                    </div>
+                    <div class="kanban-column" id="column-progress">
+                        <h3>In Progress</h3>
+                        <div class="kanban-cards" id="cards-progress"></div>
+                    </div>
+                    <div class="kanban-column" id="column-submitted">
+                        <h3>Submitted</h3>
+                        <div class="kanban-cards" id="cards-submitted"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Load saved statuses from localStorage
-        function loadGrantStatuses() {
-            const saved = localStorage.getItem('grantStatuses');
-            return saved ? JSON.parse(saved) : {};
-        }
-
-        // Save grant statuses to localStorage
-        function saveGrantStatuses(statuses) {
-            localStorage.setItem('grantStatuses', JSON.stringify(statuses));
-        }
-
         // Real grant data
         let testGrants = [
             {
@@ -609,31 +682,64 @@
             return '★'.repeat(priority) + '☆'.repeat(5 - priority);
         }
 
-        // Render all grants
-        function renderGrants() {
-            const container = document.getElementById('grantsList');
-
-            // Load saved statuses
-            const statuses = loadGrantStatuses();
+        // Load card positions from localStorage
+        function loadCardPositions() {
+            const saved = localStorage.getItem('grantCardPositions');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            // Default: all grants in "consider" column
+            const positions = { consider: [], progress: [], submitted: [] };
             testGrants.forEach(grant => {
-                if (statuses[grant.id]) {
-                    grant.status = statuses[grant.id];
-                }
+                positions.consider.push(grant.id);
             });
+            return positions;
+        }
 
-            // Sort by status (ready first) then by priority (highest first)
-            const sortedGrants = [...testGrants].sort((a, b) => {
-                if (a.status === b.status) {
-                    return b.priority - a.priority;
-                }
-                return a.status === 'ready' ? -1 : 1;
+        // Save card positions to localStorage
+        function saveCardPositions() {
+            const positions = {
+                consider: Array.from(document.getElementById('cards-consider').children).map(card => card.dataset.grantId),
+                progress: Array.from(document.getElementById('cards-progress').children).map(card => card.dataset.grantId),
+                submitted: Array.from(document.getElementById('cards-submitted').children).map(card => card.dataset.grantId)
+            };
+            localStorage.setItem('grantCardPositions', JSON.stringify(positions));
+        }
+
+        // Initialize SortableJS for all columns
+        function initializeSortable() {
+            const columns = ['consider', 'progress', 'submitted'];
+            columns.forEach(col => {
+                new Sortable(document.getElementById(`cards-${col}`), {
+                    group: 'grants',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    onEnd: function(evt) {
+                        saveCardPositions();
+                    }
+                });
             });
+        }
 
-            container.innerHTML = sortedGrants.map(grant => {
+        // Render all grants into Kanban columns
+        function renderGrants() {
+            // Load saved card positions
+            const positions = loadCardPositions();
+
+            // Function to create grant card HTML
+            const createGrantCard = (grant) => {
                 const daysUntil = getDaysUntil(grant.deadlineDate);
                 const deadlineText = daysUntil !== null
                     ? `${grant.deadline} (${daysUntil} days left)`
                     : grant.deadline;
+
+                // Determine deadline color
+                let deadlineColor = '#2e7d32'; // green
+                if (daysUntil !== null) {
+                    if (daysUntil < 14) deadlineColor = '#c62828'; // red
+                    else if (daysUntil < 30) deadlineColor = '#ef6c00'; // orange
+                }
 
                 return `
                     <div class="grant-card" data-grant-id="${grant.id}">
@@ -644,9 +750,8 @@
                             </div>
                             <div class="grant-meta">
                                 <span class="grant-amount">${grant.amount}</span>
-                                <span class="grant-deadline">${deadlineText}</span>
+                                <span class="grant-deadline" style="color: ${deadlineColor}; font-weight: 500;">${deadlineText}</span>
                                 <span class="priority-stars" title="${grant.priority} out of 5">${getPriorityStars(grant.priority)}</span>
-                                <span class="status-badge status-${grant.status}">${grant.status === 'ready' ? 'Ready' : 'Submitted'}</span>
                             </div>
                         </div>
 
@@ -689,17 +794,26 @@
                                     ${grant.instructions.map(step => `<li>${step}</li>`).join('')}
                                 </ul>
                             </div>
-
-                            <div class="action-buttons">
-                                ${grant.status === 'ready'
-                                    ? `<button class="btn-submit" onclick="markAsSubmitted('${grant.id}')">Mark as Submitted</button>`
-                                    : `<button class="btn-submit" onclick="markAsNotSubmitted('${grant.id}')">Mark as Not Submitted</button>`
-                                }
-                            </div>
                         </div>
                     </div>
                 `;
-            }).join('');
+            };
+
+            // Clear all columns
+            document.getElementById('cards-consider').innerHTML = '';
+            document.getElementById('cards-progress').innerHTML = '';
+            document.getElementById('cards-submitted').innerHTML = '';
+
+            // Render grants into their respective columns
+            ['consider', 'progress', 'submitted'].forEach(column => {
+                const columnElement = document.getElementById(`cards-${column}`);
+                positions[column].forEach(grantId => {
+                    const grant = testGrants.find(g => g.id === grantId);
+                    if (grant) {
+                        columnElement.innerHTML += createGrantCard(grant);
+                    }
+                });
+            });
 
             // Add click handlers to toggle expansion
             document.querySelectorAll('.grant-card').forEach(card => {
@@ -709,6 +823,9 @@
                     card.classList.toggle('expanded');
                 });
             });
+
+            // Initialize sortable after rendering
+            initializeSortable();
         }
 
         // Copy to clipboard
@@ -725,35 +842,6 @@
             });
         }
 
-        // Mark grant as submitted
-        function markAsSubmitted(grantId) {
-            const grant = testGrants.find(g => g.id === grantId);
-            if (grant) {
-                grant.status = 'submitted';
-
-                // Save to localStorage
-                const statuses = loadGrantStatuses();
-                statuses[grantId] = 'submitted';
-                saveGrantStatuses(statuses);
-
-                renderGrants();
-            }
-        }
-
-        // Mark grant as not submitted
-        function markAsNotSubmitted(grantId) {
-            const grant = testGrants.find(g => g.id === grantId);
-            if (grant) {
-                grant.status = 'ready';
-
-                // Save to localStorage
-                const statuses = loadGrantStatuses();
-                statuses[grantId] = 'ready';
-                saveGrantStatuses(statuses);
-
-                renderGrants();
-            }
-        }
 
         // Check authentication on page load
         checkAuth();
