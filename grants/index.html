@@ -525,6 +525,7 @@
                 priority: 5,
                 status: "ready",
                 description: "GFC partners with grassroots organizations serving children. Budget must be under $200K. 83% of grantees are first-time institutional funding recipients.",
+                funderPriorities: "GFC prioritizes: (1) Locally-led orgs where leaders have lived experience in the community, (2) Grassroots approach - small, community-based, not large NGOs, (3) Direct work with children and youth, (4) Organizations led by women or young people, (5) First-time grantees welcome - they want to be your first funder.",
                 whyWeQualify: "Locally-led (team lives in Tulum), 100% volunteer-run, small budget, direct service to children and youth, work with Mayan communities.",
                 instructions: [
                     "Go to: https://globalfundforchildren.my.site.com/GFCGrants/s/expression-of-interest?language=en_US",
@@ -934,6 +935,11 @@
                                 <h4>Description</h4>
                                 <p>${linkify(grant.description)}</p>
                             </div>
+
+                            ${grant.funderPriorities ? `<div class="detail-section">
+                                <h4>What They Look For</h4>
+                                <p>${linkify(grant.funderPriorities)}</p>
+                            </div>` : ''}
 
                             <div class="detail-section">
                                 <h4>Why We Qualify</h4>
