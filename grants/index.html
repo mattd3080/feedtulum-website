@@ -830,6 +830,27 @@
                 .replace(/'/g, '&#039;');
         }
 
+        // Helper function to make URLs clickable
+        function linkify(text) {
+            if (!text) return '';
+
+            // First escape HTML to prevent XSS
+            const escaped = escapeHtml(text);
+
+            // Regex to match URLs (http, https, www)
+            const urlRegex = /(https?:\/\/[^\s<]+|www\.[^\s<]+)/g;
+
+            // Replace URLs with clickable links
+            return escaped.replace(urlRegex, function(url) {
+                let href = url;
+                // Add https:// if URL starts with www
+                if (url.startsWith('www.')) {
+                    href = 'https://' + url;
+                }
+                return '<a href="' + href + '" target="_blank" rel="noopener noreferrer" style="color: #1976d2; text-decoration: underline;">' + url + '</a>';
+            });
+        }
+
         // Helper function to render materials
         function renderMaterials(grant) {
             try {
@@ -849,7 +870,7 @@
                 for (const key in grant.materials) {
                     const materialId = 'material-' + grant.id + '-' + index;
                     const label = labelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                    const content = escapeHtml(grant.materials[key]);
+                    const content = linkify(grant.materials[key]); // Use linkify to make URLs clickable
                     html += '<div class="material-item">';
                     html += '<div class="material-header">';
                     html += '<span class="material-label">' + label + ':</span>';
@@ -891,7 +912,7 @@
                 }
 
                 const materialsHtml = renderMaterials(grant);
-                const instructionsHtml = grant.instructions.map(step => `<li>${step}</li>`).join('');
+                const instructionsHtml = grant.instructions.map(step => `<li>${linkify(step)}</li>`).join('');
 
                 return `
                     <div class="grant-card" data-grant-id="${grant.id}">
@@ -910,12 +931,12 @@
                         <div class="grant-details">
                             <div class="detail-section">
                                 <h4>Description</h4>
-                                <p>${grant.description}</p>
+                                <p>${linkify(grant.description)}</p>
                             </div>
 
                             <div class="detail-section">
                                 <h4>Why We Qualify</h4>
-                                <p>${grant.whyWeQualify}</p>
+                                <p>${linkify(grant.whyWeQualify)}</p>
                             </div>
 
                             <div class="detail-section">
