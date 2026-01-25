@@ -805,47 +805,63 @@
 
         // Helper function to escape HTML
         function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         // Helper function to render materials
         function renderMaterials(grant) {
-            const labelMap = {
-                'emailSubject': 'Email Subject',
-                'emailBody': 'Email Body',
-                'letterOfInquiry': 'Letter of Inquiry',
-                'conceptNote': 'Concept Note',
-                'proposal': 'Proposal',
-                'inquiry': 'Partnership Inquiry'
-            };
+            try {
+                if (!grant.materials) return '';
 
-            let html = '';
-            let index = 0;
-            for (const key in grant.materials) {
-                const materialId = 'material-' + grant.id + '-' + index;
-                const label = labelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                const content = escapeHtml(grant.materials[key]);
-                html += '<div class="material-item">';
-                html += '<div class="material-header">';
-                html += '<span class="material-label">' + label + ':</span>';
-                html += '<button class="btn-copy" onclick="copyToClipboard(\'' + materialId + '\', this)">Copy</button>';
-                html += '</div>';
-                html += '<div class="material-content" id="' + materialId + '">' + content + '</div>';
-                html += '</div>';
-                index++;
+                const labelMap = {
+                    'emailSubject': 'Email Subject',
+                    'emailBody': 'Email Body',
+                    'letterOfInquiry': 'Letter of Inquiry',
+                    'conceptNote': 'Concept Note',
+                    'proposal': 'Proposal',
+                    'inquiry': 'Partnership Inquiry'
+                };
+
+                let html = '';
+                let index = 0;
+                for (const key in grant.materials) {
+                    const materialId = 'material-' + grant.id + '-' + index;
+                    const label = labelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    const content = escapeHtml(grant.materials[key]);
+                    html += '<div class="material-item">';
+                    html += '<div class="material-header">';
+                    html += '<span class="material-label">' + label + ':</span>';
+                    html += '<button class="btn-copy" onclick="copyToClipboard(\'' + materialId + '\', this)">Copy</button>';
+                    html += '</div>';
+                    html += '<div class="material-content" id="' + materialId + '">' + content + '</div>';
+                    html += '</div>';
+                    index++;
+                }
+                return html;
+            } catch (error) {
+                console.error('Error rendering materials for grant:', grant.id, error);
+                return '<p style="color: red;">Error loading materials</p>';
             }
-            return html;
         }
 
         // Render all grants into Kanban columns
         function renderGrants() {
-            // Load saved card positions
-            const positions = loadCardPositions();
+            try {
+                console.log('renderGrants called, total grants:', testGrants.length);
 
-            // Function to create grant card HTML
-            const createGrantCard = (grant) => {
+                // Load saved card positions
+                const positions = loadCardPositions();
+
+                // Function to create grant card HTML
+                const createGrantCard = (grant) => {
+                    try {
+                        console.log('Creating card for grant:', grant.id);
                 const daysUntil = getDaysUntil(grant.deadlineDate);
                 const deadlineText = daysUntil !== null
                     ? `${grant.deadline} (${daysUntil} days left)`
@@ -900,6 +916,10 @@
                         </div>
                     </div>
                 `;
+                    } catch (error) {
+                        console.error('Error creating grant card:', grant.id, error);
+                        return `<div class="grant-card"><p style="color: red;">Error loading grant: ${grant.id}</p></div>`;
+                    }
             };
 
             // Clear all columns
@@ -929,6 +949,12 @@
 
             // Initialize sortable after rendering
             initializeSortable();
+
+            console.log('renderGrants completed successfully');
+            } catch (error) {
+                console.error('Error in renderGrants:', error);
+                alert('Error loading grants. Check browser console for details.');
+            }
         }
 
         // Copy to clipboard
