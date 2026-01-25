@@ -16,7 +16,7 @@ Understand what Feed Tulum does, their programs, who they serve, and any stats. 
 Learn what they fund, what they care about, and what language they use. This helps you frame answers.
 
 ### Step 3: Get the ACTUAL application form
-Find and read every question on the form. Use Playwright if it's JavaScript-rendered.
+Find and read every question on the form. If it's JavaScript-rendered, use Playwright (`npm install playwright`, then run a script to load the page and extract `document.body.innerText`).
 
 **If you cannot access the form, STOP. Ask the user to paste the questions. Do not continue.**
 
