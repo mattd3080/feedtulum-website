@@ -23,7 +23,9 @@ Learn what they fund, what they care about, and what language they use. This hel
 **Never make things up. If you can't access something, say so in the card.**
 
 ### Step 4: Write answers
-For each real question on the form, write a clean answer using feedtulum.com content. Use [BRACKETS] for missing info.
+**First, list the exact questions you found on the form.** If you cannot list real questions, do NOT write materials - just note in the card that the form requires login/registration.
+
+For each real question, write a clean answer using feedtulum.com content. Use [BRACKETS] for missing info.
 
 ### Step 5: Update the grant card
 Edit `grants/index.html`. Add answers to the `materials` object. Update `labelMap` for new keys.
@@ -32,9 +34,9 @@ Edit `grants/index.html`. Add answers to the `materials` object. Update `labelMa
 
 ## RULES
 
-1. **Never invent** - Only answer real questions. If you can't access the form, say so in the card - don't guess what the questions might be
+1. **Never invent** - Only answer questions you can see on the actual form. If form requires login, leave materials empty and note "Form requires registration - materials to be added after viewing form"
 2. **Clean text only** - Materials contain just the answer, no headers or labels
-3. **Be honest** - If something couldn't be accessed, note it in the card and continue
+3. **Be honest** - Note what you could and couldn't access
 
 ## Example
 
