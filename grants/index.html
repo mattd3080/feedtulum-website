@@ -766,14 +766,30 @@
         // Load card positions from localStorage
         function loadCardPositions() {
             const saved = localStorage.getItem('grantCardPositions');
+            let positions;
+
             if (saved) {
-                return JSON.parse(saved);
+                positions = JSON.parse(saved);
+            } else {
+                // Default: empty columns
+                positions = { consider: [], progress: [], submitted: [] };
             }
-            // Default: all grants in "consider" column
-            const positions = { consider: [], progress: [], submitted: [] };
+
+            // Find all grant IDs that are currently in positions
+            const existingIds = new Set([
+                ...positions.consider,
+                ...positions.progress,
+                ...positions.submitted
+            ]);
+
+            // Add any new grants that aren't in saved positions to "consider" column
             testGrants.forEach(grant => {
-                positions.consider.push(grant.id);
+                if (!existingIds.has(grant.id)) {
+                    positions.consider.push(grant.id);
+                    console.log('Adding new grant to consider column:', grant.id);
+                }
             });
+
             return positions;
         }
 
