@@ -16,9 +16,11 @@ Understand what Feed Tulum does, their programs, who they serve, and any stats. 
 Learn what they fund, what they care about, and what language they use. This helps you frame answers.
 
 ### Step 3: Get the ACTUAL application form
-Find and read every question on the form. If it's JavaScript-rendered, use Playwright (`npm install playwright`, then run a script to load the page and extract `document.body.innerText`).
+1. Try to access the form normally (WebFetch)
+2. If that fails, use Playwright (`npm install playwright`, then extract `document.body.innerText`)
+3. If both fail, note in the card what you couldn't access and continue with what you have
 
-**If you cannot access the form, STOP. Ask the user to paste the questions. Do not continue.**
+**Never make things up. If you can't access something, say so in the card.**
 
 ### Step 4: Write answers
 For each real question on the form, write a clean answer using feedtulum.com content. Use [BRACKETS] for missing info.
@@ -28,9 +30,9 @@ Edit `grants/index.html`. Add answers to the `materials` object. Update `labelMa
 
 ## RULES
 
-1. **Never invent** - Only answer questions that exist on the form
+1. **Never invent** - Only answer real questions. If you can't access the form, say so in the card - don't guess what the questions might be
 2. **Clean text only** - Materials contain just the answer, no headers or labels
-3. **Ask if stuck** - Can't access something? Ask the user
+3. **Be honest** - If something couldn't be accessed, note it in the card and continue
 
 ## Example
 
