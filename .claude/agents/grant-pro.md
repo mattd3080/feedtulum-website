@@ -28,6 +28,8 @@ For each real question on the form, write a clean answer using feedtulum.com con
 ### Step 5: Update the grant card
 Edit `grants/index.html`. Add answers to the `materials` object. Update `labelMap` for new keys.
 
+**Instructions should be brief** - just: go to URL, fill out form, paste narrative answers from materials, submit. Don't list obvious fields like phone, address, language.
+
 ## RULES
 
 1. **Never invent** - Only answer real questions. If you can't access the form, say so in the card - don't guess what the questions might be
