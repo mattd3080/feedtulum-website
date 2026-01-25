@@ -803,6 +803,37 @@
             });
         }
 
+        // Helper function to render materials
+        function renderMaterials(grant) {
+            const labelMap = {
+                'emailSubject': 'Email Subject',
+                'emailBody': 'Email Body',
+                'letterOfInquiry': 'Letter of Inquiry',
+                'conceptNote': 'Concept Note',
+                'proposal': 'Proposal',
+                'inquiry': 'Partnership Inquiry'
+            };
+
+            let html = '';
+            let index = 0;
+            for (const key in grant.materials) {
+                const materialId = `material-${grant.id}-${index}`;
+                const label = labelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                const content = grant.materials[key].replace(/`/g, '\\`').replace(/\$/g, '\\$');
+                html += `
+                    <div class="material-item">
+                        <div class="material-header">
+                            <span class="material-label">${label}:</span>
+                            <button class="btn-copy" onclick="copyToClipboard('${materialId}', this)">Copy</button>
+                        </div>
+                        <div class="material-content" id="${materialId}">${content}</div>
+                    </div>
+                `;
+                index++;
+            }
+            return html;
+        }
+
         // Render all grants into Kanban columns
         function renderGrants() {
             // Load saved card positions
@@ -821,6 +852,9 @@
                     if (daysUntil < 14) deadlineColor = '#c62828'; // red
                     else if (daysUntil < 30) deadlineColor = '#ef6c00'; // orange
                 }
+
+                const materialsHtml = renderMaterials(grant);
+                const instructionsHtml = grant.instructions.map(step => `<li>${step}</li>`).join('');
 
                 return `
                     <div class="grant-card" data-grant-id="${grant.id}">
@@ -849,33 +883,13 @@
 
                             <div class="detail-section">
                                 <h4>Application Materials</h4>
-                                ${Object.keys(grant.materials).map((key, index) => {
-                                    const materialId = `material-${grant.id}-${index}`;
-                                    const labelMap = {
-                                        'emailSubject': 'Email Subject',
-                                        'emailBody': 'Email Body',
-                                        'letterOfInquiry': 'Letter of Inquiry',
-                                        'conceptNote': 'Concept Note',
-                                        'proposal': 'Proposal',
-                                        'inquiry': 'Partnership Inquiry'
-                                    };
-                                    const label = labelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                                    return `
-                                    <div class="material-item">
-                                        <div class="material-header">
-                                            <span class="material-label">${label}:</span>
-                                            <button class="btn-copy" onclick="copyToClipboard('${materialId}', this)">Copy</button>
-                                        </div>
-                                        <div class="material-content" id="${materialId}">${grant.materials[key]}</div>
-                                    </div>
-                                    `;
-                                }).join('')}
+                                ${materialsHtml}
                             </div>
 
                             <div class="detail-section">
                                 <h4>Submission Instructions</h4>
                                 <ul class="instructions-list">
-                                    ${grant.instructions.map(step => `<li>${step}</li>`).join('')}
+                                    ${instructionsHtml}
                                 </ul>
                             </div>
                         </div>
