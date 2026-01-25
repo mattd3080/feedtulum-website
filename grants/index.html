@@ -803,6 +803,13 @@
             });
         }
 
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         // Helper function to render materials
         function renderMaterials(grant) {
             const labelMap = {
@@ -817,18 +824,16 @@
             let html = '';
             let index = 0;
             for (const key in grant.materials) {
-                const materialId = `material-${grant.id}-${index}`;
+                const materialId = 'material-' + grant.id + '-' + index;
                 const label = labelMap[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                const content = grant.materials[key].replace(/`/g, '\\`').replace(/\$/g, '\\$');
-                html += `
-                    <div class="material-item">
-                        <div class="material-header">
-                            <span class="material-label">${label}:</span>
-                            <button class="btn-copy" onclick="copyToClipboard('${materialId}', this)">Copy</button>
-                        </div>
-                        <div class="material-content" id="${materialId}">${content}</div>
-                    </div>
-                `;
+                const content = escapeHtml(grant.materials[key]);
+                html += '<div class="material-item">';
+                html += '<div class="material-header">';
+                html += '<span class="material-label">' + label + ':</span>';
+                html += '<button class="btn-copy" onclick="copyToClipboard(\'' + materialId + '\', this)">Copy</button>';
+                html += '</div>';
+                html += '<div class="material-content" id="' + materialId + '">' + content + '</div>';
+                html += '</div>';
                 index++;
             }
             return html;
