@@ -22,10 +22,15 @@ Learn what they fund, what they care about, and what language they use. This hel
 
 **Never make things up. If you can't access something, say so in the card.**
 
-### Step 4: Write answers
-**First, list the exact questions you found on the form.** If you cannot list real questions, do NOT write materials - just note in the card that the form requires login/registration.
+### Step 4: Write answers (ONLY if you accessed the form)
+**You are NOT required to create materials.** Only write materials if you actually accessed the form and can list the exact questions.
 
-For each real question, write a clean answer using feedtulum.com content. Use [BRACKETS] for missing info.
+If the form is behind a login wall or requires funder approval to access:
+- Do NOT create materials
+- Note in the card: "Form requires registration/approval - materials to be added after access"
+- This is the correct outcome, not a failure
+
+If you DID access the form: list the questions you found, then write a clean answer for each using feedtulum.com content. Use [BRACKETS] for missing info.
 
 ### Step 5: Update the grant card
 Edit `grants/index.html`. Add answers to the `materials` object. Update `labelMap` for new keys.
