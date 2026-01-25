@@ -184,7 +184,6 @@
             border: 1px solid #e0e0e0;
             border-radius: 6px;
             padding: 1.5rem;
-            cursor: pointer;
             transition: all 0.2s;
             background: var(--cream);
         }
@@ -205,6 +204,57 @@
             align-items: flex-start;
             gap: 1rem;
             flex-wrap: wrap;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .grant-card.expanded .grant-header {
+            cursor: default;
+        }
+
+        .btn-close-x {
+            position: absolute;
+            top: -0.5rem;
+            right: -0.5rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            line-height: 1;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+
+        .btn-close-x:hover {
+            background: var(--terracotta-dark);
+        }
+
+        .grant-card.expanded .btn-close-x {
+            display: flex;
+        }
+
+        .btn-close-bottom {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--text-medium);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-close-bottom:hover {
+            background: var(--text-dark);
         }
 
         .grant-title {
@@ -266,6 +316,8 @@
             margin-top: 1.5rem;
             padding-top: 1.5rem;
             border-top: 1px solid #e0e0e0;
+            user-select: text;
+            cursor: text;
         }
 
         .grant-card.expanded .grant-details {
@@ -346,6 +398,8 @@
             color: var(--text-medium);
             white-space: pre-wrap;
             word-wrap: break-word;
+            user-select: text;
+            cursor: text;
         }
 
         .action-buttons {
@@ -566,29 +620,28 @@
             },
             {
                 id: "wk-kellogg",
-                name: "W.K. Kellogg Foundation 🎯 PRIORITY REGION",
+                name: "W.K. Kellogg Foundation - PRIORITY REGION",
                 funder: "W.K. Kellogg Foundation",
                 amount: "$30,000 - $100,000+",
                 deadline: "Rolling",
                 deadlineDate: null,
                 priority: 5,
                 status: "ready",
-                description: "TULUM IS IN WKKF'S PRIORITY YUCATAN PENINSULA REGION! They committed to generational investment in Quintana Roo. Funds food systems, thriving children, working families. Past grant in this region: nutrition and education for Mayan children. US 501c3s CAN apply for Mexico work. Response in 30 days.",
-                whyWeQualify: "PERFECT GEOGRAPHIC FIT: Quintana Roo is WKKF priority region. PROGRAM FIT: Food systems (farm, food bank), thriving children (orphanage), working families (food bank), education (English, agriculture), health (nutrition), racial equity (Mayan community).",
+                description: "TULUM IS IN WKKF'S PRIORITY YUCATAN PENINSULA REGION. WKKF has invested $37.9M in Yucatan, $20.2M in Campeche, $51.9M in Chiapas. They committed to generational investment in Quintana Roo. Funds food systems, thriving children, working families, racial equity. US 501c3s can apply for Mexico work. Response in 30 business days.",
+                funderPriorities: "WKKF prioritizes: (1) Thriving children - nutrition, early care, education, (2) Food systems - sustainable, equitable food access, (3) Working families - economic security for parents, (4) Racial equity - serving communities experiencing systemic disadvantage, especially Indigenous populations, (5) Community engagement - locally-led solutions, (6) Leadership development - building community capacity. Geographic priority: Yucatan Peninsula including Quintana Roo is a designated priority region for generational investment.",
+                whyWeQualify: "PERFECT GEOGRAPHIC FIT: Quintana Roo is WKKF priority region with over $110M invested in the Yucatan Peninsula. PROGRAM FIT: Food systems (permaculture farm, food bank), thriving children (orphanage nutrition and education), working families (food bank serves tourism workers), racial equity (Mayan community), community-led (local volunteers, all funds to programs).",
                 instructions: [
-                    "Visit wkkf.fluxx.io or wkkf.org/grantseekers",
-                    "Register for Fluxx portal account",
-                    "Submit Letter of Inquiry (LOI) - 250-300 words max (1500 characters)",
-                    "CRITICAL: Emphasize Quintana Roo/Yucatan Peninsula location",
-                    "Highlight multiple priorities: food systems, children, families, equity",
-                    "Mention Mayan community (racial equity focus)",
-                    "Include 1-2 specific impact numbers",
-                    "Response within 30 business days",
-                    "If invited, submit full proposal",
-                    "Mark as submitted after LOI sent"
+                    "Go to wkkf.fluxx.io, register for account, submit LOI using answers below",
+                    "Response in 30 business days; if invited, submit full proposal"
                 ],
                 materials: {
-                    letterOfInquiry: "LETTER OF INQUIRY - W.K. Kellogg Foundation\n(Submit via Fluxx at wkkf.fluxx.io - MAX 1500 characters)\n\nVERSION 1 - MULTI-PRIORITY (1485 chars):\n\nFeed Tulum requests support to expand food systems, education, and nutrition programs serving vulnerable children and working families in Tulum, Quintana Roo, Mexico—located in WKKF's priority Yucatan Peninsula region.\n\nGEOGRAPHIC ALIGNMENT: Our work directly serves communities in Quintana Roo, one of WKKF's 25 priority municipalities in the Yucatan Peninsula identified for generational investment.\n\nPROGRAM ALIGNMENT:\n\nTHRIVING CHILDREN: We partner with a local orphanage serving children with Mayan heritage, providing daily nutrition, education, and skills training. We're expanding from 20 to 60 children.\n\nFOOD SYSTEMS: Our permaculture farm teaches children sustainable agriculture while producing fresh organic food. This builds food security and transfers traditional Mayan agricultural knowledge to the next generation.\n\nWORKING FAMILIES: Bi-weekly food bank serves food-insecure working families in Tulum through partnership with local church Iglesia Camino Al Cielo.\n\nEDUCATION: English lessons and agricultural education prepare children for economic opportunity. Farm-based learning connects nutrition, sustainability, and traditional knowledge.\n\nEQUITABLE COMMUNITIES: Community-led model engages local volunteers as educators and mentors, building community capacity and leadership.\n\nMEASURABLE IMPACT: Tens of thousands of meals distributed annually. Expanding orphanage capacity 3x. Tracking nutrition outcomes, educational progress, farm production.\n\nRACIAL EQUITY: Serving primarily Mayan children and families experiencing systemic disadvantage in food access, education, and economic opportunity.\n\nFUNDING REQUEST: $40,000 to expand farm capacity, strengthen nutrition programs, and serve more children in WKKF's priority Yucatan Peninsula geography.\n\nContact: feedtulum@gmail.com\n\n---\n\nVERSION 2 - FOOD SYSTEMS FOCUS (1463 chars):\n\nFeed Tulum seeks partnership to build sustainable food systems for thriving children in Tulum, Quintana Roo, Mexico—WKKF's priority Yucatan Peninsula region.\n\nGEOGRAPHIC MATCH: We operate in Quintana Roo, one of WKKF's 25 priority municipalities in the Yucatan Peninsula committed to generational investment.\n\nFOOD SYSTEMS TRANSFORMATION: We're shifting from food charity to food capacity-building through integrated programs:\n\n1) PERMACULTURE EDUCATION: Children learn sustainable agriculture, producing fresh food while gaining skills for self-sufficiency. Farm serves as living classroom connecting nutrition, traditional Mayan agricultural practices, and climate resilience.\n\n2) COMMUNITY FOOD BANK: Bi-weekly distribution through local church partnership serves working families struggling with food insecurity.\n\n3) NUTRITION EDUCATION: Hands-on farm participation teaches children where food comes from and how to grow it themselves.\n\nTHRIVING CHILDREN: Orphanage partnership provides daily nutrition, education, and holistic support to 20 children (expanding to 60). Children with Mayan heritage gain both immediate food security and long-term agricultural skills.\n\nCOMMUNITY-LED: Local volunteers deliver education. Local church partners on distribution. Local agricultural knowledge integrated into curriculum.\n\nEQUITY FOCUS: Serving Mayan children and families experiencing systemic disadvantage in food access and economic opportunity.\n\nMEASURABLE OUTCOMES: Tracking meals distributed, children served, farm production, nutrition improvements, skill development.\n\nFUNDING: $40,000 to scale farm-based education from 20 to 60 children in WKKF's Yucatan Peninsula priority region.\n\nContact: feedtulum@gmail.com\n\n---\n\nSUBMISSION TIPS:\n- Use Version 1 for broad alignment\n- Verify character count (max 1500 including spaces)\n- Lead with Quintana Roo/Yucatan Peninsula\n- Include specific numbers\n- Mention Mayan community"
+                    projectName: "Building Food Security and Thriving Children in Tulum, Quintana Roo",
+                    projectDescription: "Feed Tulum builds food security for thriving children and working families in Tulum, Quintana Roo, Mexico—WKKF's priority Yucatan Peninsula region.\n\nWe address food insecurity through integrated programs: Our permaculture farm at a local orphanage teaches Mayan children sustainable agriculture while producing fresh organic food for daily meals. Children learn traditional agricultural knowledge alongside modern techniques, gaining skills for self-sufficiency. Our bi-weekly food bank, operated with local church Iglesia Camino Al Cielo, distributes free food kits to working families in tourism jobs who struggle to afford nutritious food.\n\nTHRIVING CHILDREN: Orphanage partnership serves 20 children (expanding to 60) with daily nutrition, English lessons, yoga, and agricultural education. Children with Mayan heritage gain both immediate food security and lifelong skills.\n\nWORKING FAMILIES: Food bank has distributed tens of thousands of meals to families working in Tulum's tourism economy.\n\nRACIAL EQUITY: Serving primarily Mayan children and families experiencing systemic disadvantage in food access, education, and economic opportunity.\n\nCOMMUNITY-LED: 100% volunteer-run, all donations fund programs directly. Local volunteers deliver education. Local partnerships drive distribution.\n\nFunding of $40,000 would expand farm capacity, strengthen nutrition programs, and serve more children in WKKF's priority Yucatan Peninsula geography.",
+                    problemStatement: "Families in Tulum, Quintana Roo face food insecurity despite living in a wealthy tourist destination. Many work long hours in tourism jobs yet cannot afford nutritious food for their children. Indigenous Mayan families experience systemic disadvantage in food access, education, and economic opportunity. Orphaned children lack consistent nutrition and skills for future self-sufficiency. Traditional food aid addresses immediate hunger but doesn't build capacity for sustainable food systems or transfer agricultural knowledge to the next generation.",
+                    objectivesOutcomes: "1) Expand orphanage capacity from 20 to 60 children with daily nutrition and education. 2) Increase food bank distribution serving working families bi-weekly. 3) Develop permaculture farm as teaching facility where children learn sustainable agriculture. 4) Transfer Mayan agricultural knowledge to next generation through hands-on learning. 5) Build children's capacity for food self-sufficiency through practical farming skills. 6) Track measurable outcomes: meals distributed, children served, farm production, nutrition improvements.",
+                    strategiesInterventions: "1) PERMACULTURE EDUCATION: Farm-based learning teaches children sustainable agriculture—companion planting, composting, rainwater harvesting—while producing fresh organic vegetables for daily meals. 2) FOOD BANK DISTRIBUTION: Bi-weekly distribution through local church partnership provides free food kits to food-insecure working families. 3) HOLISTIC CHILD DEVELOPMENT: English lessons, yoga, field trips, and job placement support complement nutrition programs. 4) COMMUNITY PARTNERSHIPS: Local orphanage hosts farm, local church partners on distribution, local volunteers deliver programming. 5) KNOWLEDGE TRANSFER: Integration of traditional Mayan agricultural practices with modern sustainable techniques.",
+                    partners: "Iglesia Camino Al Cielo (local church partner for bi-weekly food bank distribution), local orphanage in Tulum (host site for permaculture farm, serves children with Mayan heritage), community volunteers (deliver English lessons, yoga, agricultural education), local families (program beneficiaries and cultural knowledge partners).",
+                    racialEquityAlignment: "Feed Tulum centers racial equity by serving primarily Mayan children and families who experience systemic disadvantage in food access, education, and economic opportunity in Tulum. Our programs intentionally integrate traditional Mayan agricultural knowledge, honoring Indigenous heritage while building practical skills. Community leadership development happens through volunteer engagement as educators and mentors. Our locally-led model—100% volunteer-run with leadership embedded in the community—ensures programs reflect community priorities rather than outside agendas. We amplify Indigenous voices by incorporating Mayan practices in our farm curriculum and engaging families as knowledge partners."
                 }
             },
             {
@@ -918,7 +971,8 @@
 
                 return `
                     <div class="grant-card" data-grant-id="${grant.id}">
-                        <div class="grant-header">
+                        <div class="grant-header" onclick="toggleGrantCard(event, '${grant.id}')">
+                            <button class="btn-close-x" onclick="closeGrantCard(event, '${grant.id}')" title="Close">&times;</button>
                             <div class="grant-title">
                                 <h3>${grant.name}</h3>
                                 <div class="grant-funder">${grant.funder}</div>
@@ -957,6 +1011,8 @@
                                     ${instructionsHtml}
                                 </ul>
                             </div>
+
+                            <button class="btn-close-bottom" onclick="closeGrantCard(event, '${grant.id}')">Close</button>
                         </div>
                     </div>
                 `;
@@ -982,14 +1038,7 @@
                 });
             });
 
-            // Add click handlers to toggle expansion
-            document.querySelectorAll('.grant-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    // Don't toggle if clicking on a button or link
-                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
-                    card.classList.toggle('expanded');
-                });
-            });
+            // Click handlers are now inline in the HTML (toggleGrantCard and closeGrantCard functions)
 
             // Initialize sortable after rendering
             initializeSortable();
@@ -1013,6 +1062,30 @@
                     button.textContent = originalText;
                 }, 2000);
             });
+        }
+
+        // Toggle grant card expansion (only when clicking on header, not details)
+        function toggleGrantCard(event, grantId) {
+            // Don't toggle if clicking on a button, link, or close button
+            if (event.target.tagName === 'BUTTON' ||
+                event.target.tagName === 'A' ||
+                event.target.classList.contains('btn-close-x')) {
+                return;
+            }
+
+            const card = document.querySelector(`[data-grant-id="${grantId}"]`);
+            if (card && !card.classList.contains('expanded')) {
+                card.classList.add('expanded');
+            }
+        }
+
+        // Close grant card
+        function closeGrantCard(event, grantId) {
+            event.stopPropagation();
+            const card = document.querySelector(`[data-grant-id="${grantId}"]`);
+            if (card) {
+                card.classList.remove('expanded');
+            }
         }
 
 
