@@ -324,6 +324,16 @@
             display: block;
         }
 
+        .grant-details a {
+            cursor: pointer !important;
+            pointer-events: auto;
+            user-select: text;
+        }
+
+        .grant-details a:hover {
+            text-decoration: underline;
+        }
+
         .detail-section {
             margin-bottom: 1.5rem;
         }
@@ -337,6 +347,11 @@
         .detail-section p, .detail-section ul {
             color: var(--text-medium);
             font-size: 0.95rem;
+        }
+
+        .detail-section a {
+            cursor: pointer !important;
+            pointer-events: auto;
         }
 
         .instructions-list {
@@ -355,6 +370,11 @@
             position: absolute;
             left: 0;
             color: var(--terracotta);
+        }
+
+        .instructions-list a {
+            cursor: pointer !important;
+            pointer-events: auto;
         }
 
         .material-item {
@@ -400,6 +420,12 @@
             word-wrap: break-word;
             user-select: text;
             cursor: text;
+        }
+
+        .material-content a {
+            cursor: pointer !important;
+            pointer-events: auto;
+            font-family: inherit;
         }
 
         .action-buttons {
