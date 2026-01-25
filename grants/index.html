@@ -523,28 +523,18 @@
                 deadline: "Rolling",
                 deadlineDate: null,
                 priority: 5,
-                status: "ready",
-                description: "GFC partners with grassroots organizations serving children. 83% of grantees are FIRST-TIME institutional funding recipients. GFC has 10+ partners in Mexico including Mayan community orgs. Budget must be under $200K.",
-                whyWeQualify: "Locally-led (team lives in Tulum), grassroots volunteer model, small budget, direct service to children, Mayan community connection, capacity building through permaculture farm.",
+                status: "pending-form",
+                description: "GFC partners with grassroots organizations serving children. Budget must be under $200K. Form loads dynamically - could not be scraped automatically.",
+                whyWeQualify: "Locally-led, grassroots volunteer model, small budget, direct service to children.",
                 instructions: [
-                    "Go to: https://globalfundforchildren.org/become-a-partner/",
-                    "Click the Expression of Interest form link",
+                    "Go to: https://globalfundforchildren.my.site.com/GFCGrants/s/expression-of-interest?language=en_US",
                     "Use Google Chrome if form doesn't load",
-                    "Fill in org info, then paste responses from materials below",
-                    "Replace [BRACKETS] with actual numbers before submitting",
-                    "Submit and save confirmation"
+                    "APPLICATION FORM QUESTIONS NEED TO BE PROVIDED - form could not be accessed automatically",
+                    "Once form questions are provided, materials will be prepared"
                 ],
                 materials: {
-                    orgName: "Tulum Food Support",
-                    dba: "Feed Tulum",
-                    ein: "86-2375227",
-                    location: "Tulum, Quintana Roo, Mexico",
-                    website: "feedtulum.com",
-                    email: "feedtulum@gmail.com",
-                    mission: "Feed Tulum creates pathways for people to give back to underserved neighbors in Tulum, Mexico by providing food security, educational opportunities, and community support for children and families, including Mayan communities.",
-                    programs: "We operate a bi-weekly food bank serving local families, provide comprehensive support to a local orphanage including meals, English lessons, yoga classes, and field trips, and are developing an on-site permaculture farm to teach children sustainable agriculture while providing healthy food. Our team lives and works in Tulum. We are 100% volunteer-run, ensuring all donations go directly to programs.",
-                    population: "Underserved children and families in Tulum, Mexico including children in residential care at our partner orphanage, low-income families experiencing food insecurity, and Mayan community families. Children ages 0-18.",
-                    impact: "[X,XXX] meals distributed annually. [XX] children receiving English instruction and yoga classes. [XX] families served through bi-weekly food bank. Permaculture farm under development to teach sustainable agriculture."
+                    note: "Form loads dynamically and could not be scraped. Please paste the form questions here so answers can be prepared.",
+                    formUrl: "https://globalfundforchildren.my.site.com/GFCGrants/s/expression-of-interest?language=en_US"
                 }
             },
             {
@@ -870,16 +860,8 @@
                     'conceptNote': 'Concept Note',
                     'proposal': 'Proposal',
                     'inquiry': 'Partnership Inquiry',
-                    'orgName': 'Organization Name',
-                    'dba': 'DBA',
-                    'ein': 'EIN',
-                    'location': 'Location',
-                    'website': 'Website',
-                    'email': 'Email',
-                    'mission': 'Mission',
-                    'programs': 'Programs',
-                    'population': 'Population Served',
-                    'impact': 'Impact'
+                    'note': 'Note',
+                    'formUrl': 'Form URL'
                 };
 
                 let html = '';
