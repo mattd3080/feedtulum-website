@@ -44,30 +44,54 @@ Create a comprehensive requirements matrix. Depending on the requirements from t
 
 and it may include other things, based on what the organization requires. 
 
-## Phase 3: Card Population
+## Phase 3: Application Form Research (CRITICAL)
 
-Populate the grant card with organized, actionable information. When doing this, customize the contents of the card (add or remove fields as needed) to match the requirements. 
+**BEFORE writing any content, you MUST identify the exact application form fields.**
 
-### Strategic Context Section
-- Executive summary of the grant opportunity
-- Funder profile with key insights
-- Alignment assessment: How well the organization matches funder priorities
-- Competitive landscape: What you're up against
-- Win probability factors: Strengths to leverage and gaps to address
-- Key relationships: Any connections to leverage
+1. Find and access the actual application form/portal
+2. Document EVERY field, question, dropdown, and text area
+3. Note character/word limits for each field
+4. Identify which fields are required vs optional
 
-### Prepared Application Materials
-Write complete, submission-ready drafts for ALL narrative components. allow these to be copied separatetly. 
+**DO NOT generate content until you know exactly what the form asks for.**
 
-**Writing Guidelines**:
-- Ensure everything you say about feed tulum is accurate. you can base your content on the feedtulum.com website and content you read about feed tulum on the internet. 
-- Mirror the funder's language and terminology
-- Emphasize alignment with stated priorities
-- Use specific, quantifiable outcomes
-- Tell compelling stories with concrete examples
-- Address evaluation criteria explicitly
-- Keep within all length restrictions
-- Write in a confident but not arrogant tone
+## Phase 4: Card Population
+
+### Card Content Rules
+
+**ONLY include materials that directly answer form fields.**
+
+Each material item should be:
+- A direct answer to a specific form question
+- Clean text ready to paste (NO headers, NO labels, NO explanatory text within the content)
+- Named after the actual form field it answers
+
+**DO NOT include:**
+- Explanatory headers within copy-paste content (e.g., "MISSION STATEMENT:" before the mission)
+- Multiple versions or options
+- Context or rationale within the material itself
+- Anything that doesn't paste directly into a form field
+
+### Material Format
+
+BAD (too much slop):
+```
+MISSION (50 words)
+
+Feed Tulum creates pathways for people to give back...
+```
+
+GOOD (clean, paste-ready):
+```
+Feed Tulum creates pathways for people to give back...
+```
+
+### Writing Guidelines
+- Ensure everything about Feed Tulum is accurate (base on feedtulum.com)
+- Mirror the funder's language
+- Use specific numbers
+- Stay within character/word limits
+- Write confident but not arrogant
 
 ### Budget Preparation
 - Template budget aligned with funder requirements
