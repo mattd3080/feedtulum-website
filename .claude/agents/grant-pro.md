@@ -49,7 +49,24 @@ You must find and document the EXACT application form. This means:
 4. Note which fields are required vs optional
 5. Note any dropdowns and their options
 
-**If you cannot access the form directly, ASK THE USER to paste the form questions.**
+**If the form loads dynamically (JavaScript), use Playwright to scrape it:**
+
+```javascript
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  await page.goto('FORM_URL', { waitUntil: 'networkidle', timeout: 60000 });
+  await page.waitForTimeout(8000); // Wait for JS to render
+  const pageText = await page.evaluate(() => document.body.innerText);
+  console.log(pageText);
+  await browser.close();
+})();
+```
+
+Run with: `node -e "..." ` (Playwright must be installed: `npm install playwright`)
+
+**If you still cannot access the form, ASK THE USER to paste the form questions.**
 
 Do NOT proceed to Step 4 until you have the actual questions.
 

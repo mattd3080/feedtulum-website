@@ -523,18 +523,27 @@
                 deadline: "Rolling",
                 deadlineDate: null,
                 priority: 5,
-                status: "pending-form",
-                description: "GFC partners with grassroots organizations serving children. Budget must be under $200K. Form loads dynamically - could not be scraped automatically.",
-                whyWeQualify: "Locally-led, grassroots volunteer model, small budget, direct service to children.",
+                status: "ready",
+                description: "GFC partners with grassroots organizations serving children. Budget must be under $200K. 83% of grantees are first-time institutional funding recipients.",
+                whyWeQualify: "Locally-led (team lives in Tulum), 100% volunteer-run, small budget, direct service to children and youth, work with Mayan communities.",
                 instructions: [
                     "Go to: https://globalfundforchildren.my.site.com/GFCGrants/s/expression-of-interest?language=en_US",
-                    "Use Google Chrome if form doesn't load",
-                    "APPLICATION FORM QUESTIONS NEED TO BE PROVIDED - form could not be accessed automatically",
-                    "Once form questions are provided, materials will be prepared"
+                    "Select 'Organization' from first dropdown",
+                    "Fill address: [YOUR STREET], Tulum, [ZIP], Quintana Roo, Mexico",
+                    "Geographic area: Americas",
+                    "Phone: [YOUR PHONE]",
+                    "Language: English or Spanish",
+                    "Website: feedtulum.com",
+                    "Social Media 1: https://instagram.com/feedtulum",
+                    "Fill expenditure amounts: [YOUR NUMBERS]",
+                    "Women-led / Youth-led: [SELECT YES OR NO]",
+                    "Paste narrative answers from materials below",
+                    "Submit"
                 ],
                 materials: {
-                    note: "Form loads dynamically and could not be scraped. Please paste the form questions here so answers can be prepared.",
-                    formUrl: "https://globalfundforchildren.my.site.com/GFCGrants/s/expression-of-interest?language=en_US"
+                    howOrgBegan: "Feed Tulum began when community members living in Tulum saw the stark divide between tourism prosperity and the difficult conditions facing many local residents. We witnessed neighbors without consistent access to nutritious food, medicine, and basic amenities. Rather than look away, we created pathways for people to give back. What started as neighbors helping neighbors has grown into a registered 501(c)(3) nonprofit with consistent programs serving children and families in need. We remain 100% volunteer-run, with no salaried staff, ensuring all funds go directly to our community programs.",
+                    workWithChildren: "We work directly with children and youth through three core programs. First, we partner with a local orphanage, providing regular food supplies, English lessons, yoga classes, field trips, and job placement assistance for youth aging out of care. We recently launched an on-site permaculture farm where children learn sustainable agriculture while growing organic food for their meals. Second, our bi-weekly food bank, operated with local church Iglesia Camino Al Cielo, distributes free food kits to families, ensuring children have consistent access to nutrition. Third, our annual Tacos and Toys event brings joy to local children during the holidays with meals and gifts. We have distributed tens of thousands of free meals and countless clothing items to families and orphans.",
+                    anythingElse: "Tulum is known worldwide as a tourist destination, but many local residents, including Indigenous Mayan families, live in conditions tourists never see. They work long hours in tourism jobs yet struggle to afford nutritious food for their children. Feed Tulum bridges this gap. Our team lives in Tulum - we are neighbors serving neighbors, not outsiders managing from abroad. Our permaculture farm teaches children to grow their own food, building self-sufficiency rather than dependence. We integrate Mayan agricultural knowledge, honoring our community's heritage. With no paid staff, 100% of donations fund programs. We seek partnership with GFC because we share your commitment to grassroots, community-led change that empowers children and youth."
                 }
             },
             {
@@ -860,8 +869,9 @@
                     'conceptNote': 'Concept Note',
                     'proposal': 'Proposal',
                     'inquiry': 'Partnership Inquiry',
-                    'note': 'Note',
-                    'formUrl': 'Form URL'
+                    'howOrgBegan': 'How your organization began',
+                    'workWithChildren': 'Work with children and youth',
+                    'anythingElse': 'Anything else to share'
                 };
 
                 let html = '';
