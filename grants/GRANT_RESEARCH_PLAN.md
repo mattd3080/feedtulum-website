@@ -88,7 +88,7 @@
 - Nutrition assistance, food access
 - Community feeding programs
 
-### Program 4: Tacos and Toys
+### Program 4: Tacos and Traditions
 **Description:** Annual holiday event providing meals, toys, and family experiences.
 
 **Activities:**
