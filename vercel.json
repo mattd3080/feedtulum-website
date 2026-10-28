@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/giving-calendar",
+      "destination": "/giving-calendar/index.html"
+    }
+  ],
   "redirects": [
     {
       "source": "/donate",
