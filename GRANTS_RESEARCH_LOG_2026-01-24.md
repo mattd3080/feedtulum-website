@@ -251,7 +251,7 @@ Every grant evaluated against:
 ### Programs
 1. **Orphanage Support:** <20 children (expanding to 60), food, English lessons, yoga, permaculture farm, job placement
 2. **Bi-weekly Food Bank:** Partnership with Iglesia Camino Al Cielo, distributes food kits
-3. **Tacos and Toys:** Annual holiday event
+3. **Tacos and Traditions:** Annual holiday event
 4. **Impact:** Tens of thousands of meals distributed
 
 ### Partnerships
