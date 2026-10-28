@@ -115,7 +115,7 @@
 
         .nav-links {
             display: flex;
-            gap: clamp(1.5rem, 3vw, 2.5rem);
+            gap: clamp(0.75rem, 2vw, 1.75rem);
             list-style: none;
             align-items: center;
         }
@@ -371,6 +371,16 @@
 
         .help-featured .btn-primary {
             white-space: nowrap;
+        }
+
+        .help-featured .giving-calendar-link {
+            margin-top: 1rem;
+        }
+
+        .giving-calendar-link a {
+            color: var(--terracotta-dark);
+            text-decoration: underline;
+            text-underline-offset: 4px;
         }
 
         .help-secondary {
@@ -897,6 +907,7 @@
                 <li><a href="#programs" onclick="closeMenu()">Programs</a></li>
                 <li><a href="#help" onclick="closeMenu()">Get Involved</a></li>
                 <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+                <li><a href="/calendar">Giving Calendar</a></li>
                 <li><a href="https://pages.donately.com/feedtulum/campaign/feed-tulum/" class="nav-cta" target="_blank" rel="noopener">Donate</a></li>
             </ul>
             <button class="nav-toggle" onclick="toggleMenu()" aria-label="Menu">
@@ -972,6 +983,7 @@
                 <div>
                     <h3>Make a Donation</h3>
                     <p>Our biggest constraint is financial and the most impactful way for you to help us is by donating or helping us raise funds. We don't have salaried staff and 100% of funds we receive go back into the community. We are a 501(c)(3) non-profit and donations are tax deductible for Americans.</p>
+                    <p class="giving-calendar-link"><a href="/calendar">Explore the Giving Calendar</a> — choose a monthly gift from $1 to $31.</p>
                 </div>
                 <a href="https://pages.donately.com/feedtulum/campaign/feed-tulum/" class="btn btn-primary btn-large" target="_blank" rel="noopener">Donate Now</a>
             </div>
