@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/calendar",
+      "destination": "/giving-calendar/index.html"
+    },
+    {
       "source": "/giving-calendar",
       "destination": "/giving-calendar/index.html"
     }
