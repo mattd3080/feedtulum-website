@@ -77,4 +77,20 @@ test('a paid $2 plan fills square 2; cancellation, outages and recovery update t
   assert.equal(message.hidden, true);
   assert.equal(legend.hidden, false);
   assert.deepEqual(links.map(link => link.attributes.href), initialLinks);
+
+  // Every amount visits all levels independently, including Santa appearing at
+  // three, remaining above three, and disappearing when the count decreases.
+  const levels = [0, 1, 2, 3, 5, 2, 0];
+  for (let step = 0; step < levels.length; step++) {
+    const counts = Object.fromEntries(links.map((_, index) => [index + 1, levels[(index + step) % levels.length]]));
+    reply = { supporterCounts: counts };
+    await nextRefresh();
+    for (const [index, link] of links.entries()) {
+      const count = counts[index + 1];
+      assert.deepEqual([...link.classes], count ? [`supporters-${Math.min(count, 3)}`] : [], `Day ${index + 1}, count ${count}`);
+      assert.equal(link.attributes.title, `${count} monthly supporter${count === 1 ? '' : 's'}`);
+      assert.ok(link.attributes['aria-label'].startsWith(`${link.attributes.title}. December ${index + 1}:`));
+      assert.equal(link.attributes.href, initialLinks[index]);
+    }
+  }
 });
