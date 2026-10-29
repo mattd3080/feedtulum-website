@@ -1,10 +1,10 @@
 // Local-only visual fixture. No credentials, provider requests, or payments.
-// Usage: node tests/preview-calendar.mjs [filled|empty|unavailable]
+// Usage: node tests/preview-calendar.mjs [filled|santa|empty|unavailable]
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 
 const state = process.argv[2] || 'filled';
-if (!['filled', 'empty', 'unavailable'].includes(state)) throw new Error('Use filled, empty, or unavailable');
+if (!['filled', 'santa', 'empty', 'unavailable'].includes(state)) throw new Error('Use filled, santa, empty, or unavailable');
 const files = {
   '/calendar': ['../giving-calendar/index.html', 'text/html'],
   '/giving-calendar/status.js': ['../giving-calendar/status.js', 'text/javascript'],
@@ -17,7 +17,7 @@ http.createServer(async (request, response) => {
     response.setHeader('Content-Type', 'application/json');
     response.statusCode = state === 'unavailable' ? 503 : 200;
     return response.end(JSON.stringify(state === 'unavailable' ? { error: 'Fixture outage' } : {
-      supporterCounts: state === 'filled' ? { 2: 1, 15: 2, 21: 3, 31: 5 } : {}, updatedAt: new Date().toISOString(),
+      supporterCounts: state === 'santa' ? Object.fromEntries(Array.from({ length: 31 }, (_, index) => [index + 1, 3])) : state === 'filled' ? { 2: 1, 15: 2, 21: 3, 31: 5 } : {}, updatedAt: new Date().toISOString(),
     }));
   }
   const file = files[request.url];
