@@ -1,7 +1,6 @@
 (() => {
   const legend = document.querySelector('.calendar-legend');
   const message = document.querySelector('#calendar-status');
-  message.hidden = false;
   const days = [...document.querySelectorAll('.calendar td a')].map(link => {
     return { link, day: Number(link.querySelector('.day').textContent), label: link.getAttribute('aria-label') };
   });
