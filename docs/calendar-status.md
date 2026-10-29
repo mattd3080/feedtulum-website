@@ -1,19 +1,26 @@
 # Giving calendar status
 
-`GET /api/calendar-status` reads Donately subscriptions for Feed Tulum's main campaign. Set `DONATELY_API_TOKEN` as a sensitive Vercel production environment variable before deploying. Never put it in HTML, browser JavaScript, or Git.
+The website makes no authenticated requests to Donately and needs no Donately API token. Donation links still preload the chosen monthly amount.
 
-A square is filled when at least one live, active USD monthly subscription for that campaign was created on or after October 28, 2026 at midnight in Tulum (UTC-5), has a processed, unrefunded first payment, and its current monthly amount matches the square ($1–$31). Donor-paid fees are excluded when the fee metadata matches the current total. Renewals of older subscriptions do not count. Canceled or suspended subscriptions no longer fill a square. Filled squares remain donation links.
+`POST /api/donately-webhook` accepts authenticated donation notifications, strips private donor fields and updates private Vercel Blob storage using conditional writes. `GET /api/calendar-status` returns only filled days and a timestamp. It returns 503 when storage is unavailable or not initialized; the page then hides the availability legend and keeps donation links working. Successful status responses cache for 60 seconds; the page refreshes every 60 seconds.
 
-The endpoint returns only `filledDays` and `updatedAt`. It caches successful results at the CDN for 60 seconds. The page checks every 60 seconds, so changes normally appear within about two minutes after Donately updates. Errors return HTTP 503 without caching; the page hides the availability key and displays an unavailable message while retaining the links. No database or webhook configuration is needed.
+Rules remain: an active live monthly USD plan created since October 28, 2026 at midnight in Tulum, with a processed unrefunded first payment, fills its $1–$31 square. Valid donor-paid fee metadata is excluded. Older renewals, one-time donations, tests and other campaigns do not fill squares. Cancellation or suspension releases a square unless another plan still fills it.
 
-Run `node --test tests/*.test.mjs`. These fixtures cover matching, fees, date boundaries, exclusions, pagination, and endpoint failures without making donations. A live read verifies connectivity; no test payment is submitted.
+## Configuration and pending acceptance
 
-For visual testing, run `node tests/preview-calendar.mjs filled` and open `http://127.0.0.1:8766/calendar`. The fixture shows 2, 21 and 31 filled. Restart with `empty` or `unavailable` to inspect those states. It binds only to localhost, never reads an API token and never contacts Donately. Tests are excluded from deployment. The UI regression test runs the actual status script through paid → canceled → filled → unavailable → recovered states and checks that all donation links remain unchanged.
+- Private Blob store: `feedtulum-calendar`, accessed using `BLOB_STORE_ID` and Vercel's automatically rotated OIDC identity. No static storage token is needed by the application.
+- `CALENDAR_WEBHOOK_TOKEN_HASH` is the SHA-256 digest of a random receiver token. Donately's delivery URL includes the raw receiver token, which can only submit calendar events; it cannot access Donately, donors, refunds or bank accounts. Request URLs may appear in platform/provider logs. Never log bodies or secrets in application code.
+- Required events: `account.donation.create.success`, `account.donation.update.success`, `account.subscription.update.success`, `account.subscription.recur.failure`. The receiver URL has `event` and `token` query parameters.
+- As of October 28, webhook registration is blocked: Donately's dashboard returns “Version is not included in the list.” Its documented create endpoint also rejects the documented version dates and the default. No webhook has been successfully created. Provider payloads and real delivery remain unverified. Do not initialize an empty state and claim live availability until this is resolved.
+- Ask Donately support for the accepted webhook `version` value and complete payload examples, including nested subscription/first-payment data and record update timestamps. The receiver intentionally returns 422 on unsupported payloads. Resend failed deliveries after compatibility fixes.
+- Before enabling public status, establish the current baseline and verify real donation/cancellation/refund notifications without creating unauthorized charges. Synthetic tests do not prove provider integration.
 
-## Credential security
+## Checks
 
-The personal token is stored as a sensitive, production-only Vercel environment variable. The endpoint accepts GET without parameters, uses a fixed Donately destination/account/campaign, refuses upstream redirects, and returns only public day numbers and a timestamp. Errors are generic and never log provider responses. Git and deployment ignore rules exclude local secrets. These controls protect the website boundary; they do not reduce the token's privileges at Donately.
+Run `npm test` and `npm audit --omit=dev`. Tests cover amount/date rules, duplicate and delayed events, refunds, multiple supporters, authentication, privacy, size limits, conditional-write retries and the existing browser status behavior. For visual fixtures, run `node tests/preview-calendar.mjs filled` and open localhost:8766/calendar. Tests are excluded from deployment.
 
-Donately's API supports refunds, subscription edits and immediate charges. Treat a stolen personal token as potential donor-data and financial compromise. The dashboard exposes no read-only token setting as of October 28, 2026. Ask Donately support whether they can provision a credential restricted to reading subscriptions for this account. See [API reference](https://developer.donate.ly/api/) and [account roles](https://support.donately.com/help/team-members).
+## Credential retirement
 
-If a token leaks, rotate it in Donately, replace the sensitive Vercel production value and redeploy promptly; review activity with Donately and the payment processor. Rotation can interrupt other integrations using the same personal token. Losing the local copy alone is not a disclosure. Do not store passwords or tokens in this document or Git.
+Remove the former Donately token from all Vercel environments and delete retired deployments that captured it. Scan local files and Git objects without displaying matches. Rotate the personal token in Donately to invalidate any inaccessible retained copies. Rotation may affect unrelated integrations using that same personal token. Never copy the replacement into this project.
+
+Local cleanup and deployment deletion cannot prove erasure of third-party backups or inaccessible logs. Rotation is the effective revocation step. Browser policy requires the account holder to perform the final credential-change action.

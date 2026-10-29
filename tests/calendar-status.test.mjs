@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getFilledDays, loadCalendarStatus, START_MS } from '../lib/calendar-status.mjs';
+import { getFilledDays, START_MS } from '../lib/calendar-status.mjs';
 
 const scope = { accountId: 'act_test', campaignId: 'cmp_test', nowMs: Date.parse('2026-10-29T00:00:00Z') };
 const subscription = (changes = {}) => ({
@@ -38,32 +38,3 @@ test('uses the start of October 28 in Tulum and keeps older renewals out', () =>
   assert.deepEqual(getFilledDays([subscription({ created: START_MS - 86400000, updated: scope.nowMs })], scope), []);
 });
 
-test('reads all pages and returns only public calendar data', async () => {
-  let calls = 0;
-  const result = await loadCalendarStatus({ ...scope, token: 'private-test-token', fetchImpl: async (url, init) => {
-    const parsed = new URL(url);
-    assert.equal(parsed.origin, 'https://api.donately.com');
-    assert.equal(parsed.searchParams.get('account_id'), scope.accountId);
-    assert.match(init.headers.Authorization, /^Basic /);
-    assert.equal(init.method, 'GET');
-    assert.equal(init.redirect, 'error');
-    assert.equal(parsed.pathname, '/v2/subscriptions');
-    assert.equal(parsed.searchParams.get('offset'), String(calls));
-    const item = subscription({ id: `sub_${calls}`, amount_in_cents: calls++ === 0 ? 200 : 3100, person: { email: 'private@example.test' } });
-    return { ok: true, json: async () => ({ data: [item], summary: { total_count: 2 } }) };
-  }});
-  assert.equal(calls, 2);
-  assert.deepEqual(result.filledDays, [2, 31]);
-  assert.deepEqual(Object.keys(result).sort(), ['filledDays', 'updatedAt']);
-  assert.ok(!JSON.stringify(result).includes('private'));
-});
-
-test('upstream failures and incomplete pages cannot report empty availability', async () => {
-  for (const response of [
-    { ok: false, status: 401 },
-    { ok: true, json: async () => ({ data: [], summary: { total_count: 1 } }) },
-    { ok: true, json: async () => ({ unexpected: true }) },
-  ]) {
-    await assert.rejects(loadCalendarStatus({ ...scope, token: 'test', fetchImpl: async () => response }));
-  }
-});
