@@ -54,3 +54,23 @@ test('a new abbreviated signup waits for plan details; later details fill it and
   const foreign=normalizeEvent({object_data:{...p,currency:'mxn'}},'account.donation.create.success',time+5000);
   assert.deepEqual(publicStatus(applyEvent(emptyState(),foreign),time+5000).filledDays,[]);
 });
+test('real plan notifications omit payment IDs: join both delivery orders and preserve refunds and cancellations', () => {
+  const details=event(plan({donation_parent:undefined}));
+  const p={...plan().donation_parent,created:time,amount_in_cents:200,currency:'usd',account:plan().account,campaign:plan().campaign,subscription:{id:'sub_test'}};
+  const paid=normalizeEvent({object_data:p},'account.donation.create.success',time+5000);
+  for (const events of [[details,paid],[paid,details]]) {
+    let state=events.reduce(applyEvent,emptyState());
+    assert.deepEqual(publicStatus(state,time+5000).filledDays,[2]);
+    const withoutPlan=normalizeEvent({object_data:{...p,subscription:undefined,created:undefined,updated:time+500}},'account.donation.update.success',time+5000);
+    state=applyEvent(state,withoutPlan);
+    assert.deepEqual(publicStatus(state,time+5000).filledDays,[2]);
+    const refunded=normalizeEvent({object_data:{...p,updated:time+1000,refunded:200}},'account.donation.update.success',time+5000);
+    assert.deepEqual(publicStatus(applyEvent(state,refunded),time+5000).filledDays,[]);
+    state=applyEvent(state,event(plan({donation_parent:undefined,status:'canceled',updated:time+1000})));
+    assert.deepEqual(publicStatus(state,time+5000).filledDays,[]);
+  }
+  const baseline=applyEvent(emptyState(),event(plan()));
+  const updated=applyEvent(baseline,event(plan({donation_parent:undefined,updated:time+1000})));
+  assert.equal(updated.subscriptions.sub_test.parent,'dnt_test');
+  assert.deepEqual(publicStatus(updated,time+5000).filledDays,[2]);
+});
