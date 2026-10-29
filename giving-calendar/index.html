@@ -67,12 +67,15 @@
         h2 { font-size: 1.85rem; margin: 0; font-weight: 600; letter-spacing: -.02em; }
         .month { margin: 0; color: var(--terracotta); font-weight: 600; font-size: .95rem; }
         .calendar-meta { text-align: right; }
-        .calendar-legend { display: flex; justify-content: flex-end; gap: 14px; margin-top: 8px; font-size: .75rem; color: var(--text-medium); }
+        .calendar-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 14px; max-width: 340px; margin-top: 8px; font-size: .75rem; color: var(--text-medium); }
         .calendar-legend[hidden], [hidden] { display: none; }
-        .calendar-legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .calendar-legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
         .swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid #dedac8; background: #f5f2e5; }
-        .swatch.filled { background: #c6c8c5; border-color: #8c918b; }
-        td a.is-filled { background: #c6c8c5; border-color: #8c918b; }
+        .swatch.supporters-1, td a.supporters-1 { background: linear-gradient(145deg, #eff7df, #d9ead0); border-color: #afc49d; }
+        .swatch.supporters-2, td a.supporters-2 { background: linear-gradient(145deg, #cfe5c2, #a8ce9b); border-color: #7b9f6e; }
+        td a.supporters-3 { background: linear-gradient(145deg, #b7d7a3, #85b77e); border-color: #61865a; }
+        td a.supporters-3::after { content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); width: 38px; height: 38px; background: url('/giving-calendar/images/santa.png') center / contain no-repeat; pointer-events: none; }
+        .legend-santa { width: 22px; height: 22px; object-fit: contain; }
         .status-message { text-align: center; font-size: .75rem; color: var(--text-medium); margin: 0 6px 12px; }
         table { width: 100%; table-layout: fixed; border-spacing: 6px; }
         th { font-weight: 500; color: var(--text-medium); font-size: .75rem; padding: 0 0 10px; }
@@ -84,8 +87,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100px;
-            padding: 10px 2px;
+            min-height: 120px;
+            padding: 34px 2px 10px;
             border: 1px solid #dedac8;
             border-radius: 10px;
             background: #f5f2e5;
@@ -113,10 +116,11 @@
             .calendar-header { display: block; padding: 2px 10px 18px; text-align: center; }
             h2 { font-size: clamp(1.5rem, 6.5vw, 1.75rem); }
             .month { display: none; }
-            .calendar-legend { margin-top: 12px; font-size: .6875rem; }
+            .calendar-legend { justify-content: center; max-width: 280px; margin: 12px auto 0; font-size: .6875rem; }
             table { border-spacing: 3px 5px; }
             th { font-size: .6875rem; padding-bottom: 4px; }
-            td a { min-height: 82px; border-radius: 7px; }
+            td a { min-height: 108px; padding-top: 28px; border-radius: 7px; }
+            td a.supporters-3::after { width: 30px; height: 30px; }
             .day { font-size: 1.25rem; }
             .amount { font-size: .6875rem; line-height: 1.4; margin-top: 4px; }
             .period { display: block; font-size: .5625rem; }
@@ -143,8 +147,10 @@
                 <div class="calendar-meta">
                     <p class="month" id="calendar-month">December 2026</p>
                     <div class="calendar-legend" hidden aria-label="Calendar key">
-                        <span><span class="swatch" aria-hidden="true"></span>Available</span>
-                        <span><span class="swatch filled" aria-hidden="true"></span>Filled</span>
+                        <span><span class="swatch" aria-hidden="true"></span>0 supporters</span>
+                        <span><span class="swatch supporters-1" aria-hidden="true"></span>1 supporter</span>
+                        <span><span class="swatch supporters-2" aria-hidden="true"></span>2 supporters</span>
+                        <span><img class="legend-santa" src="/giving-calendar/images/santa.png" width="22" height="22" alt="">3+ supporters</span>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
-import { getFilledDays, START_MS } from '../lib/calendar-status.mjs';
+import { getSupporterCounts, START_MS } from '../lib/calendar-status.mjs';
 
 const source = await readFile(new URL('../giving-calendar/status.js', import.meta.url), 'utf8');
 
@@ -25,12 +25,13 @@ test('a paid $2 plan fills square 2; cancellation, outages and recovery update t
       querySelector: () => ({ textContent: String(day) }),
       getAttribute: name => attributes[name],
       setAttribute: (name, value) => { attributes[name] = value; },
+      removeAttribute: name => { delete attributes[name]; },
       classList: { toggle: (name, on) => on ? classes.add(name) : classes.delete(name), remove: name => classes.delete(name) },
     };
   });
   const initialLinks = links.map(link => link.attributes.href);
   let nextRefresh;
-  let reply = { filledDays: getFilledDays([plan], scope) };
+  let reply = { supporterCounts: getSupporterCounts([plan], scope) };
   let fail = false;
   vm.runInNewContext(source, {
     document: { querySelector: selector => selector === '.calendar-legend' ? legend : message, querySelectorAll: () => links },
@@ -39,25 +40,36 @@ test('a paid $2 plan fills square 2; cancellation, outages and recovery update t
     fetch: async url => { assert.equal(url, '/api/calendar-status'); return { ok: !fail, json: async () => reply }; },
   });
   await new Promise(resolve => setImmediate(resolve));
-  const filled = () => links.flatMap((link, index) => link.classes.has('is-filled') ? [index + 1] : []);
+  const filled = () => links.flatMap((link, index) => [...link.classes].some(c => c.startsWith('supporters-')) ? [index + 1] : []);
   assert.deepEqual(filled(), [2]);
-  assert.match(links[1].attributes['aria-label'], /^Filled\./);
+  assert.match(links[1].attributes['aria-label'], /^1 monthly supporter\./);
   assert.equal(legend.hidden, false);
 
-  reply = { filledDays: getFilledDays([{ ...plan, status: 'canceled' }], scope) };
+  reply = { supporterCounts: getSupporterCounts([{ ...plan, status: 'canceled' }], scope) };
   await nextRefresh();
   assert.deepEqual(filled(), []);
-  assert.match(links[1].attributes['aria-label'], /^Available\./);
+  assert.match(links[1].attributes['aria-label'], /^0 monthly supporters\./);
 
-  reply = { filledDays: [2, 21, 31] };
+  reply = { supporterCounts: { 2: 1, 21: 2, 31: 3 } };
   await nextRefresh();
+  assert.ok(links[1].classes.has('supporters-1'));
+  assert.ok(links[20].classes.has('supporters-2'));
+  assert.ok(links[30].classes.has('supporters-3'));
+  reply = { supporterCounts: { 2: 1, 21: 2, 31: 5 } };
+  await nextRefresh();
+  assert.ok(links[30].classes.has('supporters-3'));
+  assert.match(links[30].attributes['aria-label'], /^5 monthly supporters\./);
+  reply = { supporterCounts: { 2: 1, 21: 2, 31: 2 } };
+  await nextRefresh();
+  assert.ok(!links[30].classes.has('supporters-3'));
+  assert.ok(links[30].classes.has('supporters-2'));
   fail = true;
   await nextRefresh();
   assert.deepEqual(filled(), []);
   assert.equal(legend.hidden, true);
   assert.equal(message.hidden, false);
   assert.match(message.textContent, /unavailable/);
-  assert.ok(links.every(link => !/^(Filled|Available)\./.test(link.attributes['aria-label'])));
+  assert.ok(links.every(link => /^December /.test(link.attributes['aria-label'])));
 
   fail = false;
   await nextRefresh();

@@ -5,6 +5,18 @@ import { normalizeEvent, applyEvent, publicStatus, emptyState } from '../lib/cal
 const time = Date.parse('2026-10-29T00:00:00Z');
 const plan = (extra = {}) => ({ id: 'sub_test', object: 'subscription', account: { id: 'act_50d509c0c0b4' }, campaign: { id: 'cmp_164cd8d8b53b' }, created: time - 1000, updated: time, status: 'active', livemode: true, currency: 'usd', recurring_frequency: '1.month', amount_in_cents: 200, donation_parent: { id: 'dnt_test', status: 'processed', livemode: true, recurring: true, refunded: null, updated: time }, ...extra });
 const event = (p) => normalizeEvent({ data: p }, 'account.subscription.update.success', time + 5000);
+test('donor IDs become private fingerprints; totals deduplicate people without exposing identities', () => {
+  const original = plan({ person: { id: 'person_alice', email: 'private@example.test' } });
+  let state = applyEvent(emptyState(), event(original));
+  state = applyEvent(state, event({ ...original, id: 'sub_second' }));
+  state = applyEvent(state, event(plan({ id: 'sub_bob', person: { id: 'person_bob' } })));
+  assert.deepEqual(publicStatus(state, time + 5000).supporterCounts, { 2: 2 });
+  state = applyEvent(state, event(plan({ updated: time + 1000 })));
+  assert.deepEqual(publicStatus(state, time + 5000).supporterCounts, { 2: 2 });
+  assert.ok(!JSON.stringify(state).includes('person_alice'));
+  assert.ok(!JSON.stringify(state).includes('private@example.test'));
+  assert.deepEqual(Object.keys(publicStatus(state, time + 5000)).sort(), ['filledDays', 'supporterCounts', 'updatedAt']);
+});
 test('accepts the Donately event envelope without retaining envelope or donor fields', () => {
   const normalized=normalizeEvent({id:'evt_example',type_string:'subscription.updated',api_version:'2019-03-15',created:time,object:'subscription',object_data:plan(),event_data:{event:'update'}},'account.subscription.update.success',time+5000);
   assert.deepEqual(publicStatus(applyEvent(emptyState(),normalized),time+5000).filledDays,[2]);

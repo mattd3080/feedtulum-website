@@ -2,9 +2,15 @@
 
 The website makes no authenticated requests to Donately and needs no Donately API token. Donation links still preload the chosen monthly amount.
 
-`POST /api/donately-webhook` accepts authenticated donation notifications, strips private donor fields and updates private Vercel Blob storage using conditional writes. `GET /api/calendar-status` returns only filled days and a timestamp. It returns 503 when storage is unavailable or not initialized; the page then hides the availability legend and keeps donation links working. Successful status responses cache for 60 seconds; the page refreshes every 60 seconds.
+`POST /api/donately-webhook` accepts authenticated donation notifications, strips private donor fields and updates private Vercel Blob storage using conditional writes. `GET /api/calendar-status` returns only supporter counts by amount, legacy filled days and a timestamp. It returns 503 when storage is unavailable or not initialized; the page then hides the supporter legend and keeps donation links working. Successful status responses cache for 60 seconds; the page refreshes every 60 seconds.
 
 Rules remain: an active live monthly USD plan created since October 28, 2026 at midnight in Tulum, with a processed unrefunded first payment, fills its $1–$31 square. Valid donor-paid fee metadata is excluded. Older renewals, one-time donations, tests and other campaigns do not fill squares. Cancellation or suspension releases a square unless another plan still fills it.
+
+## Supporter levels
+
+The page uses cream for zero supporters, light green for one, deeper green for two, and a Santa illustration on green for three or more. Counts remain exact above three and are exposed in each link's accessible name and hover title. Every amount remains available to donate.
+
+Count unique supporters per dollar amount, rather than payment events. When supplied, a Donately `person.id` is SHA-256 hashed with the account ID and only that fingerprint is stored privately; names, emails and raw person IDs are discarded. Duplicate active plans for that same fingerprint count once at the same amount. Subscriptions without donor identity, including older sanitized records, fall back to their unique subscription ID; distinct people cannot be established for those records. Missing identity in later updates does not erase a known fingerprint. Cancellation and first-payment refund recalculate the count; renewals and duplicate webhooks do not add supporters. No Donately API token or new provider access is required.
 
 ## Configuration and delivery verification
 

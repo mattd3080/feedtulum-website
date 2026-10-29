@@ -8,6 +8,7 @@ if (!['filled', 'empty', 'unavailable'].includes(state)) throw new Error('Use fi
 const files = {
   '/calendar': ['../giving-calendar/index.html', 'text/html'],
   '/giving-calendar/status.js': ['../giving-calendar/status.js', 'text/javascript'],
+  '/giving-calendar/images/santa.png': ['../giving-calendar/images/santa.png', 'image/png'],
   '/favicon.svg': ['../favicon.svg', 'image/svg+xml'],
 };
 http.createServer(async (request, response) => {
@@ -16,7 +17,7 @@ http.createServer(async (request, response) => {
     response.setHeader('Content-Type', 'application/json');
     response.statusCode = state === 'unavailable' ? 503 : 200;
     return response.end(JSON.stringify(state === 'unavailable' ? { error: 'Fixture outage' } : {
-      filledDays: state === 'filled' ? [2, 21, 31] : [], updatedAt: new Date().toISOString(),
+      supporterCounts: state === 'filled' ? { 2: 1, 15: 2, 21: 3, 31: 5 } : {}, updatedAt: new Date().toISOString(),
     }));
   }
   const file = files[request.url];
