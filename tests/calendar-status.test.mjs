@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getFilledDays, START_MS } from '../lib/calendar-status.mjs';
+import { getFilledDays, getSupporterCounts, START_MS } from '../lib/calendar-status.mjs';
 
 const scope = { accountId: 'act_test', campaignId: 'cmp_test', nowMs: Date.parse('2026-10-29T00:00:00Z') };
 const subscription = (changes = {}) => ({
@@ -36,5 +36,17 @@ test('matches the gift before optional fees and rejects stale fee metadata', () 
 test('uses the start of October 28 in Tulum and keeps older renewals out', () => {
   assert.equal(START_MS, Date.parse('2026-10-28T00:00:00-05:00'));
   assert.deepEqual(getFilledDays([subscription({ created: START_MS - 86400000, updated: scope.nowMs })], scope), []);
+});
+
+test('counts unique monthly supporters per amount, not duplicate plans or payment deliveries', () => {
+  const alice = subscription({ id: 'sub_alice', supporterKey: 'alice' });
+  const bob = subscription({ id: 'sub_bob', donation_parent: { ...subscription().donation_parent, supporterKey: 'bob' } });
+  const carol = subscription({ id: 'sub_carol', supporterKey: 'carol' });
+  const plans = [alice, bob, carol, alice, { ...alice, id: 'sub_secondAlice' }];
+  assert.deepEqual(getSupporterCounts(plans, scope), { 2: 3 });
+  assert.deepEqual(getSupporterCounts([...plans, { ...alice, amount_in_cents: 1500 }], scope), { 2: 3, 15: 1 });
+  assert.deepEqual(getSupporterCounts([alice, bob, { ...carol, status: 'canceled' }], scope), { 2: 2 });
+  assert.deepEqual(getSupporterCounts([alice, { ...bob, donation_parent: { ...bob.donation_parent, refunded: 200 } }], scope), { 2: 1 });
+  assert.deepEqual(getSupporterCounts([subscription(), subscription()], scope), { 2: 1 });
 });
 
