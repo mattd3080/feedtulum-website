@@ -45,6 +45,9 @@ test('reads all pages and returns only public calendar data', async () => {
     assert.equal(parsed.origin, 'https://api.donately.com');
     assert.equal(parsed.searchParams.get('account_id'), scope.accountId);
     assert.match(init.headers.Authorization, /^Basic /);
+    assert.equal(init.method, 'GET');
+    assert.equal(init.redirect, 'error');
+    assert.equal(parsed.pathname, '/v2/subscriptions');
     assert.equal(parsed.searchParams.get('offset'), String(calls));
     const item = subscription({ id: `sub_${calls}`, amount_in_cents: calls++ === 0 ? 200 : 3100, person: { email: 'private@example.test' } });
     return { ok: true, json: async () => ({ data: [item], summary: { total_count: 2 } }) };
