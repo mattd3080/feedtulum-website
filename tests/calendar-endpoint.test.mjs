@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import handler, { createHandler } from '../api/calendar-status.js';
 import { createHandler as webhook } from '../api/donately-webhook.js';
-import { updateState } from '../lib/calendar-store.mjs';
+import { readState, updateState } from '../lib/calendar-store.mjs';
 import { BlobPreconditionFailedError } from '@vercel/blob';
 
 const response = () => ({ headers: {}, code: 200, body: null, setHeader(k, v) { this.headers[k] = v; }, status(n) { this.code = n; return this; }, json(v) { this.body = v; return this; } });
@@ -35,4 +35,15 @@ test('conditional storage retry re-reads state instead of overwriting another de
     write: async (_path,_body,options) => { assert.equal(options.ifMatch,`v${reads}`); if (++writes === 1) throw new BlobPreconditionFailedError(); },
   });
   assert.equal(reads,2); assert.equal(writes,2); delete process.env.BLOB_STORE_ID;
+});
+test('storage reads request an uncompressed representation for a usable conditional-write ETag', async () => {
+  process.env.BLOB_STORE_ID = 'store_test';
+  try {
+    const stored = await readState({ fetchBlob: async (_path, options) => ({
+      statusCode: 200,
+      stream: new Response(JSON.stringify({version:1,subscriptions:{},payments:{}})).body,
+      blob: { etag: options.headers?.['Accept-Encoding'] === 'identity' ? '"revision1"' : 'W/"revision1"' },
+    }) });
+    assert.equal(stored.etag, '"revision1"');
+  } finally { delete process.env.BLOB_STORE_ID; }
 });
