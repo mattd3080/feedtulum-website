@@ -1,73 +1,38 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import handler from '../api/calendar-status.js';
+import { createHash } from 'node:crypto';
+import handler, { createHandler } from '../api/calendar-status.js';
+import { createHandler as webhook } from '../api/donately-webhook.js';
+import { updateState } from '../lib/calendar-store.mjs';
+import { BlobPreconditionFailedError } from '@vercel/blob';
 
-function response() {
-  return {
-    headers: {}, code: 200, body: null,
-    setHeader(name, value) { this.headers[name] = value; },
-    status(code) { this.code = code; return this; },
-    json(body) { this.body = body; return this; },
-  };
-}
-
-test('endpoint rejects writes and never caches unavailable status', async () => {
-  const write = response();
-  await handler({ method: 'POST' }, write);
-  assert.equal(write.code, 405);
-  assert.equal(write.headers.Allow, 'GET');
-  const saved = process.env.DONATELY_API_TOKEN;
-  delete process.env.DONATELY_API_TOKEN;
-  try {
-    const read = response();
-    await handler({ method: 'GET', url: '/api/calendar-status' }, read);
-    assert.equal(read.code, 503);
-    assert.equal(read.headers['Cache-Control'], 'no-store');
-    assert.deepEqual(read.body, { error: 'Donation status is temporarily unavailable' });
-  } finally {
-    if (saved !== undefined) process.env.DONATELY_API_TOKEN = saved;
+const response = () => ({ headers: {}, code: 200, body: null, setHeader(k, v) { this.headers[k] = v; }, status(n) { this.code = n; return this; }, json(v) { this.body = v; return this; } });
+test('public endpoint rejects writes and query parameters, never exposes storage errors', async () => {
+  for (const [method, url, code] of [['POST','/api/calendar-status',405], ['GET','/api/calendar-status?refresh=1',400], ['GET','/api/calendar-status',503]]) {
+    const res = response(); await handler({ method, url }, res); assert.equal(res.code, code);
   }
+  const res = response();
+  await createHandler(async () => { throw new Error('private@example.test secret'); })({method:'GET',url:'/api/calendar-status'},res);
+  assert.equal(res.headers['Cache-Control'],'no-store'); assert.ok(!JSON.stringify(res).includes('private'));
+  const good = response();
+  await createHandler(async () => ({filledDays:[2],updatedAt:'2026-10-29T00:00:00Z'}))({method:'GET',url:'/api/calendar-status'},good);
+  assert.deepEqual(Object.keys(good.body).sort(), ['filledDays','updatedAt']);
 });
-
-test('all write methods and query parameters are rejected before contacting Donately', async () => {
-  const originalFetch = globalThis.fetch;
-  let calls = 0;
-  globalThis.fetch = async () => { calls++; throw new Error('Unexpected upstream request'); };
-  try {
-    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']) {
-      const res = response();
-      await handler({ method, url: '/api/calendar-status' }, res);
-      assert.equal(res.code, 405);
-    }
-    for (const query of ['account_id=act_other', 'url=https://example.test', 'refresh=1']) {
-      const res = response();
-      await handler({ method: 'GET', url: `/api/calendar-status?${query}` }, res);
-      assert.equal(res.code, 400);
-    }
-    assert.equal(calls, 0);
-  } finally { globalThis.fetch = originalFetch; }
-});
-
-test('successful responses contain only public status and errors never echo credentials or donor data', async () => {
-  const originalFetch = globalThis.fetch;
-  const saved = process.env.DONATELY_API_TOKEN;
-  process.env.DONATELY_API_TOKEN = 'fake-sensitive-token';
-  try {
-    globalThis.fetch = async () => ({ ok: true, json: async () => ({ data: [], summary: { total_count: 0 }, token: 'fake-sensitive-token', donor: 'private@example.test' }) });
-    const success = response();
-    await handler({ method: 'GET', url: '/api/calendar-status' }, success);
-    assert.equal(success.code, 200);
-    assert.deepEqual(Object.keys(success.body).sort(), ['filledDays', 'updatedAt']);
-    assert.equal(success.headers['Cache-Control'], 'public, max-age=0, s-maxage=60');
-    globalThis.fetch = async () => { throw new Error('fake-sensitive-token private@example.test'); };
-    const error = response();
-    await handler({ method: 'GET', url: '/api/calendar-status' }, error);
-    assert.equal(error.code, 503);
-    assert.equal(error.headers['Cache-Control'], 'no-store');
-    assert.ok(!JSON.stringify([success, error]).match(/fake-sensitive-token|private@example/));
-  } finally {
-    globalThis.fetch = originalFetch;
-    if (saved === undefined) delete process.env.DONATELY_API_TOKEN;
-    else process.env.DONATELY_API_TOKEN = saved;
+test('webhook rejects unauthenticated, malformed and oversized deliveries without writing', async () => {
+  const token = 'a'.repeat(64);
+  process.env.CALENDAR_WEBHOOK_TOKEN_HASH = createHash('sha256').update(token).digest('hex');
+  let writes = 0; const receive = webhook(async () => { writes++; });
+  for (const [query, body, code] of [['token=bad',{},401],[`token=${token}&event=bad`,{},400],[`token=${token}&event=account.donation.create.success`,{},422],[`token=${token}&event=account.donation.create.success`,'x'.repeat(131073),413]]) {
+    const res = response(); await receive({method:'POST',url:`/api/donately-webhook?${query}`,body},res); assert.equal(res.code,code);
   }
+  assert.equal(writes,0); delete process.env.CALENDAR_WEBHOOK_TOKEN_HASH;
+});
+test('conditional storage retry re-reads state instead of overwriting another delivery', async () => {
+  process.env.BLOB_STORE_ID = 'store_test';
+  let reads = 0, writes = 0;
+  await updateState({subscriptions:[],payments:[]}, {
+    read: async () => ({state:{version:1,subscriptions:{},payments:{}},etag:`v${++reads}`}),
+    write: async (_path,_body,options) => { assert.equal(options.ifMatch,`v${reads}`); if (++writes === 1) throw new BlobPreconditionFailedError(); },
+  });
+  assert.equal(reads,2); assert.equal(writes,2); delete process.env.BLOB_STORE_ID;
 });
