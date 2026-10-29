@@ -1,0 +1,11 @@
+.env
+.env.*
+.git/
+.claude/
+.vercel/
+node_modules/
+*api-token*
+*.pem
+*.key
+tests/
+docs/

@@ -3,11 +3,6 @@
   const message = document.querySelector('#calendar-status');
   message.hidden = false;
   const days = [...document.querySelectorAll('.calendar td a')].map(link => {
-    const mark = document.createElement('span');
-    mark.className = 'filled-mark';
-    mark.textContent = '✓';
-    mark.setAttribute('aria-hidden', 'true');
-    link.append(mark);
     return { link, day: Number(link.querySelector('.day').textContent), label: link.getAttribute('aria-label') };
   });
 
