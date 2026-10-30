@@ -55,16 +55,64 @@ test('actual abbreviated donation payload updates a known first payment without 
   assert.deepEqual(normalized.subscriptions,[]);
   assert.deepEqual(publicStatus(applyEvent(original,normalized),time+5000).filledDays,[]);
 });
-test('a new abbreviated signup waits for plan details; later details fill it and old renewals are not retained', () => {
+test('a new abbreviated signup counts immediately; later details do not double count and renewals are ignored', () => {
   const p={...plan().donation_parent,created:time,amount_in_cents:200,currency:'usd',account:plan().account,campaign:plan().campaign,parent:{},subscription:{id:'sub_test',status:'active',livemode:true,currency:'usd',amount_in_cents:200}};
   const normalized=normalizeEvent({object_data:p},'account.donation.create.success',time+5000);
   const pending=applyEvent(emptyState(),normalized);
-  assert.throws(()=>publicStatus(pending,time+5000),/Awaiting recurring plan details/);
+  assert.deepEqual(publicStatus(pending,time+5000).supporterCounts,{2:1});
   assert.deepEqual(publicStatus(applyEvent(pending,event(plan())),time+5000).filledDays,[2]);
   const renewal=normalizeEvent({object_data:{...p,id:'dnt_renewal',parent:{id:'dnt_test'}}},'account.donation.create.success',time+5000);
   assert.deepEqual(renewal.payments,[]);
   const foreign=normalizeEvent({object_data:{...p,currency:'mxn'}},'account.donation.create.success',time+5000);
   assert.deepEqual(publicStatus(applyEvent(emptyState(),foreign),time+5000).filledDays,[]);
+});
+
+test('abbreviated signups fill all 31 amounts with three supporters without plan details', () => {
+  let state = emptyState();
+  for (let day = 1; day <= 31; day++) {
+    for (let person = 1; person <= 3; person++) {
+      const suffix = `${day}x${person}`;
+      const p = { ...plan().donation_parent, id: `dnt_${suffix}`, created: time,
+        amount_in_cents: day * 100, currency: 'usd', account: plan().account, campaign: plan().campaign,
+        person: {id: `per_${suffix}`}, subscription: { id: `sub_${suffix}`, status: 'active' } };
+      const paid = normalizeEvent({object_data:p}, 'account.donation.create.success', time+5000);
+      state = applyEvent(applyEvent(state, paid), paid);
+      assert.equal(publicStatus(state,time+5000).supporterCounts[day], person);
+      // A second plan from the same person at the same amount adds no supporter.
+      state = applyEvent(state, normalizeEvent({object_data:{...p,id:`dnt_other${suffix}`,subscription:{id:`sub_other${suffix}`}}}, 'account.donation.create.success', time+5000));
+      assert.equal(publicStatus(state,time+5000).supporterCounts[day], person);
+    }
+  }
+  assert.deepEqual(publicStatus(state,time+5000).supporterCounts, Object.fromEntries(Array.from({length:31},(_,i)=>[i+1,3])));
+  assert.deepEqual(state.subscriptions, {});
+});
+
+test('abbreviated signup respects fees, refunds, eligibility and later plan status', () => {
+  const p = { ...plan().donation_parent, created:time, amount_in_cents:1042, currency:'usd',
+    meta_data:{'base-amount':1000,'donor-pays-fees':42},
+    account:plan().account, campaign:plan().campaign, subscription:{id:'sub_test',status:'active'} };
+  const paid = normalizeEvent({object_data:p},'account.donation.create.success',time+5000);
+  const initial = applyEvent(emptyState(),paid);
+  assert.deepEqual(publicStatus(initial,time+5000).supporterCounts,{10:1});
+  for (const changes of [{created:time-86400000*2}, {created:time+6000}, {currency:'mxn'}, {amount_in_cents:3200}, {status:'pending'}, {refunded:1042}, {livemode:false}, {recurring:false}, {campaign:{id:'cmp_other'}}, {subscription:{id:'sub_test',status:'canceled'}}, {parent:{id:'dnt_older'}}]) {
+    const ignored = normalizeEvent({object_data:{...p,...changes}},'account.donation.create.success',time+5000);
+    assert.deepEqual(publicStatus(applyEvent(emptyState(),ignored),time+5000).supporterCounts,{},JSON.stringify(changes));
+  }
+  const refund = normalizeEvent({object_data:{...p, subscription:undefined, created:undefined, updated:time+1000, refunded:1042}},'account.donation.update.success',time+5000);
+  const refunded = applyEvent(initial,refund);
+  assert.deepEqual(publicStatus(applyEvent(refunded,paid),time+5000).supporterCounts,{});
+  const canceled = event(plan({amount_in_cents:1000,recurring_frequency:undefined,donation_parent:undefined,status:'canceled',updated:time+1000}));
+  for (const events of [[paid,canceled],[canceled,paid]]) {
+    assert.deepEqual(publicStatus(events.reduce(applyEvent,emptyState()),time+5000).supporterCounts,{});
+  }
+  const moved = event(plan({amount_in_cents:1500,recurring_frequency:'1.year',donation_parent:undefined,updated:time+1000}));
+  assert.deepEqual(publicStatus(applyEvent(initial,moved),time+5000).supporterCounts,{15:1});
+});
+
+test('a full plan without an explicit payment parent still counts its first payment', () => {
+  const p = {...plan().donation_parent,account:plan().account,campaign:plan().campaign,subscription:plan({donation_parent:undefined})};
+  const paid = normalizeEvent({object_data:p},'account.donation.create.success',time+5000);
+  assert.deepEqual(publicStatus(applyEvent(emptyState(),paid),time+5000).supporterCounts,{2:1});
 });
 test('real plan notifications omit payment IDs: join both delivery orders and preserve refunds and cancellations', () => {
   const details=event(plan({donation_parent:undefined}));

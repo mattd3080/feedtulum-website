@@ -17,7 +17,7 @@
       for (const { link, day, label } of days) {
         const count = counts[day] ?? 0;
         for (let level = 1; level <= 3; level++) link.classList.toggle(`supporters-${level}`, Math.min(count, 3) === level);
-        const summary = `${count} monthly supporter${count === 1 ? '' : 's'}`;
+        const summary = `${count} recurring supporter${count === 1 ? '' : 's'}`;
         link.setAttribute('aria-label', `${summary}. ${label}`);
         link.setAttribute('title', summary);
       }
