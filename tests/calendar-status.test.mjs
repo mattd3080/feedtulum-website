@@ -15,10 +15,10 @@ test('fills exact monthly dollar levels once, including both ends of the calenda
   assert.deepEqual(getFilledDays([subscription(), subscription(), subscription({ amount_in_cents: 100 }), subscription({ amount_in_cents: 3100 })], scope), [1, 2, 31]);
 });
 
-test('requires a new, paid, active monthly commitment for this account and campaign', () => {
+test('requires a new, paid, active recurring commitment for this account and campaign', () => {
   const excluded = [
     { created: START_MS - 1 }, { created: scope.nowMs + 1 }, { status: 'canceled' }, { status: 'suspended' },
-    { recurring_frequency: '1.year' }, { currency: 'mxn' }, { livemode: false },
+    { currency: 'mxn' }, { livemode: false },
     { account: { id: 'act_other' } }, { campaign: { id: 'cmp_other' } },
     { amount_in_cents: 99 }, { amount_in_cents: 3200 }, { amount_in_cents: 250 },
     { donation_parent: { status: 'pending', livemode: true, recurring: true } },
@@ -26,6 +26,13 @@ test('requires a new, paid, active monthly commitment for this account and campa
     { donation_parent: { status: 'processed', livemode: false, recurring: true } },
   ];
   assert.deepEqual(getFilledDays(excluded.map(subscription), scope), []);
+});
+
+test('counts recurring commitments without requiring or inferring monthly frequency', () => {
+  for (const recurring_frequency of [undefined, '1.month', '1.year', '7.day']) {
+    assert.deepEqual(getSupporterCounts([subscription({ recurring_frequency })], scope), { 2: 1 });
+  }
+  assert.deepEqual(getSupporterCounts([subscription({ donation_parent: { status: 'processed', livemode: true, recurring: false } })], scope), {});
 });
 
 test('matches the gift before optional fees and rejects stale fee metadata', () => {

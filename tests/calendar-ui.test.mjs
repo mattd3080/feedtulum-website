@@ -42,13 +42,13 @@ test('a paid $2 plan fills square 2; cancellation, outages and recovery update t
   await new Promise(resolve => setImmediate(resolve));
   const filled = () => links.flatMap((link, index) => [...link.classes].some(c => c.startsWith('supporters-')) ? [index + 1] : []);
   assert.deepEqual(filled(), [2]);
-  assert.match(links[1].attributes['aria-label'], /^1 monthly supporter\./);
+  assert.match(links[1].attributes['aria-label'], /^1 recurring supporter\./);
   assert.equal(legend.hidden, false);
 
   reply = { supporterCounts: getSupporterCounts([{ ...plan, status: 'canceled' }], scope) };
   await nextRefresh();
   assert.deepEqual(filled(), []);
-  assert.match(links[1].attributes['aria-label'], /^0 monthly supporters\./);
+  assert.match(links[1].attributes['aria-label'], /^0 recurring supporters\./);
 
   reply = { supporterCounts: { 2: 1, 21: 2, 31: 3 } };
   await nextRefresh();
@@ -58,7 +58,7 @@ test('a paid $2 plan fills square 2; cancellation, outages and recovery update t
   reply = { supporterCounts: { 2: 1, 21: 2, 31: 5 } };
   await nextRefresh();
   assert.ok(links[30].classes.has('supporters-3'));
-  assert.match(links[30].attributes['aria-label'], /^5 monthly supporters\./);
+  assert.match(links[30].attributes['aria-label'], /^5 recurring supporters\./);
   reply = { supporterCounts: { 2: 1, 21: 2, 31: 2 } };
   await nextRefresh();
   assert.ok(!links[30].classes.has('supporters-3'));
@@ -88,7 +88,7 @@ test('a paid $2 plan fills square 2; cancellation, outages and recovery update t
     for (const [index, link] of links.entries()) {
       const count = counts[index + 1];
       assert.deepEqual([...link.classes], count ? [`supporters-${Math.min(count, 3)}`] : [], `Day ${index + 1}, count ${count}`);
-      assert.equal(link.attributes.title, `${count} monthly supporter${count === 1 ? '' : 's'}`);
+      assert.equal(link.attributes.title, `${count} recurring supporter${count === 1 ? '' : 's'}`);
       assert.ok(link.attributes['aria-label'].startsWith(`${link.attributes.title}. December ${index + 1}:`));
       assert.equal(link.attributes.href, initialLinks[index]);
     }
