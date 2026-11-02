@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getFilledDays, getSupporterCounts, START_MS } from '../lib/calendar-status.mjs';
+import { getFilledDays, getSupporterCounts, START_MS, PENDING_GRACE_MS } from '../lib/calendar-status.mjs';
 
 const scope = { accountId: 'act_test', campaignId: 'cmp_test', nowMs: Date.parse('2026-10-29T00:00:00Z') };
 const subscription = (changes = {}) => ({
@@ -21,11 +21,23 @@ test('requires a new, paid, active recurring commitment for this account and cam
     { currency: 'mxn' }, { livemode: false },
     { account: { id: 'act_other' } }, { campaign: { id: 'cmp_other' } },
     { amount_in_cents: 99 }, { amount_in_cents: 3200 }, { amount_in_cents: 250 },
-    { donation_parent: { status: 'pending', livemode: true, recurring: true } },
+    { donation_parent: { status: 'failed', livemode: true, recurring: true } },
     { donation_parent: { status: 'processed', livemode: true, recurring: true, refunded: 200 } },
     { donation_parent: { status: 'processed', livemode: false, recurring: true } },
   ];
   assert.deepEqual(getFilledDays(excluded.map(subscription), scope), []);
+});
+
+test('pending commitments count for seven days, then require confirmation', () => {
+  const pending = subscription({ donation_parent: { ...subscription().donation_parent, status: 'pending', created: START_MS } });
+  for (const elapsed of [0, PENDING_GRACE_MS - 1]) {
+    assert.deepEqual(getSupporterCounts([pending], { ...scope, nowMs: START_MS + elapsed }), { 2: 1 });
+  }
+  assert.deepEqual(getSupporterCounts([pending], { ...scope, nowMs: START_MS + PENDING_GRACE_MS }), {});
+  assert.deepEqual(getSupporterCounts([{ ...pending, donation_parent: { ...pending.donation_parent, status: 'processed' } }], { ...scope, nowMs: START_MS + 2 * PENDING_GRACE_MS }), { 2: 1 });
+  for (const changes of [{ status: 'failed' }, { refunded: true }, { recurring: false }, { created: scope.nowMs + 1 }]) {
+    assert.deepEqual(getSupporterCounts([{ ...pending, donation_parent: { ...pending.donation_parent, ...changes } }], scope), {});
+  }
 });
 
 test('counts recurring commitments without requiring or inferring monthly frequency', () => {

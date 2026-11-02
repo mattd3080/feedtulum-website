@@ -1,10 +1,48 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeEvent, applyEvent, publicStatus, emptyState } from '../lib/calendar-events.mjs';
+import { START_MS, PENDING_GRACE_MS } from '../lib/calendar-status.mjs';
 
 const time = Date.parse('2026-10-29T00:00:00Z');
 const plan = (extra = {}) => ({ id: 'sub_test', object: 'subscription', account: { id: 'act_50d509c0c0b4' }, campaign: { id: 'cmp_164cd8d8b53b' }, created: time - 1000, updated: time, status: 'active', livemode: true, currency: 'usd', recurring_frequency: '1.month', amount_in_cents: 200, donation_parent: { id: 'dnt_test', status: 'processed', livemode: true, recurring: true, refunded: null, updated: time }, ...extra });
 const event = (p) => normalizeEvent({ data: p }, 'account.subscription.update.success', time + 5000);
+test('pending webhook expires without a completion event; retries cannot extend its grace period', () => {
+  const p = { ...plan().donation_parent, created:time, status:'pending', amount_in_cents:3100, currency:'USD', account:plan().account, campaign:plan().campaign, subscription:{id:'sub_test'} };
+  const receive = (changes = {}) => normalizeEvent({object_data:{...p,...changes}}, 'account.donation.update.success', time + PENDING_GRACE_MS * 3);
+  let state = applyEvent(emptyState(), receive());
+  assert.deepEqual(publicStatus(state,time+1).supporterCounts,{31:1});
+  state = applyEvent(state, receive({updated:time+PENDING_GRACE_MS-1}));
+  assert.deepEqual(publicStatus(state,time+PENDING_GRACE_MS).supporterCounts,{});
+  state = applyEvent(state, receive({status:'processed',updated:time+PENDING_GRACE_MS+1}));
+  assert.deepEqual(publicStatus(state,time+PENDING_GRACE_MS+2).supporterCounts,{31:1});
+  state = applyEvent(state, receive({updated:time+PENDING_GRACE_MS+2}));
+  assert.deepEqual(publicStatus(state,time+PENDING_GRACE_MS+3).supporterCounts,{31:1});
+  state = applyEvent(state, receive({status:'failed',updated:time+PENDING_GRACE_MS+3}));
+  assert.deepEqual(publicStatus(state,time+PENDING_GRACE_MS+4).supporterCounts,{});
+});
+
+test('same-timestamp completion beats pending, but cannot revive a failed or refunded payment', () => {
+  const payment = {...plan().donation_parent, created:time, status:'pending', amount_in_cents:200, currency:'usd', account:plan().account, campaign:plan().campaign, subscription:{id:'sub_test'}};
+  const receive = changes => normalizeEvent({object_data:{...payment,...changes}},'account.donation.update.success',time+5000);
+  let state=applyEvent(emptyState(),receive({}));
+  state=applyEvent(state,receive({status:'processed'}));
+  assert.equal(state.payments.dnt_test.status,'processed');
+  for (const terminal of [{status:'failed'},{status:'processed',refunded:200}]) {
+    const stopped=applyEvent(state,receive(terminal));
+    assert.deepEqual(publicStatus(applyEvent(stopped,receive({status:'processed'})),time+1).supporterCounts,{});
+  }
+});
+
+test('verified old plan excludes a renewal even when Donately omits its parent', () => {
+  for (const status of ['pending','processed']) {
+    const p={...plan().donation_parent,status,created:time,amount_in_cents:2500,currency:'USD',account:plan().account,campaign:plan().campaign,subscription:{id:'sub_test'}};
+    const renewal=normalizeEvent({object_data:p},'account.donation.create.success',time+5000);
+    const old=event(plan({created:START_MS-86400000,amount_in_cents:2500,donation_parent:undefined}));
+    for (const events of [[old,renewal],[renewal,old]]) {
+      assert.deepEqual(publicStatus(events.reduce(applyEvent,emptyState()),time+5000).supporterCounts,{});
+    }
+  }
+});
 test('donor IDs become private fingerprints; totals deduplicate people without exposing identities', () => {
   const original = plan({ person: { id: 'person_alice', email: 'private@example.test' } });
   let state = applyEvent(emptyState(), event(original));
@@ -94,7 +132,7 @@ test('abbreviated signup respects fees, refunds, eligibility and later plan stat
   const paid = normalizeEvent({object_data:p},'account.donation.create.success',time+5000);
   const initial = applyEvent(emptyState(),paid);
   assert.deepEqual(publicStatus(initial,time+5000).supporterCounts,{10:1});
-  for (const changes of [{created:time-86400000*2}, {created:time+6000}, {currency:'mxn'}, {amount_in_cents:3200}, {status:'pending'}, {refunded:1042}, {livemode:false}, {recurring:false}, {campaign:{id:'cmp_other'}}, {subscription:{id:'sub_test',status:'canceled'}}, {parent:{id:'dnt_older'}}]) {
+  for (const changes of [{created:time-86400000*2}, {created:time+6000}, {currency:'mxn'}, {amount_in_cents:3200}, {status:'failed'}, {refunded:1042}, {livemode:false}, {recurring:false}, {campaign:{id:'cmp_other'}}, {subscription:{id:'sub_test',status:'canceled'}}, {parent:{id:'dnt_older'}}]) {
     const ignored = normalizeEvent({object_data:{...p,...changes}},'account.donation.create.success',time+5000);
     assert.deepEqual(publicStatus(applyEvent(emptyState(),ignored),time+5000).supporterCounts,{},JSON.stringify(changes));
   }
